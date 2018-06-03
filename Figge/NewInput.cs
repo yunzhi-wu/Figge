@@ -19,6 +19,7 @@ namespace Figge
         private List<string> wordsHighlighted;
         private List<string> phrasesHighlighted;
         private int allTextLen;
+        private string allText;
 
         public NewInput()
         {
@@ -90,8 +91,10 @@ namespace Figge
 
         private void richTextBoxInput_TextChanged(object sender, EventArgs e)
         {
+            // get the new text
+            allText = richTextBoxInput.Text;
+
             // if some text are removed, these saved strings need be checked
-            string allText = richTextBoxInput.Text;
             if (allTextLen == allText.Length)
             {
                 return;
@@ -142,9 +145,19 @@ namespace Figge
                 richTextBoxInput.SelectionBackColor = Color.Yellow;
 
                 // save them into local variabls
-                wordsHighlighted.Add(selectedText);
+                // todo: split in the proper way
+                foreach (char charactor in selectedText.ToCharArray())
+                {
+                    // const char[] punctuations = { ',', '.', '\?', '!', '，', '。', '？', '！' };
+                    
+                    if (!wordsHighlighted.Contains(charactor.ToString()))
+                    {
+                        Console.Write(charactor);
+                        wordsHighlighted.Add(charactor.ToString());
+                    }
+                }
 
-                displayList(wordsHighlighted);
+                // displayList(wordsHighlighted);
             }
             else if (buttonNewPhaseBackColor == Color.Green)
             {
@@ -161,8 +174,38 @@ namespace Figge
                 // save them into local variables
                 phrasesHighlighted.Add(selectedText);
 
-                displayList(phrasesHighlighted);
+                // displayList(phrasesHighlighted);
             }
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            System.Data.SqlClient.SqlConnection connectionWord =
+    new System.Data.SqlClient.SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\yunzh\\vc_projects\\Figge\\Figge\\repository.mdf;Integrated Security=True");
+
+            connectionWord.Open();
+
+            // update the highlighted word in database
+            for (int i = 0;i < wordsHighlighted.Count;i++)
+            {
+                // prepare record
+                string wordSave = wordsHighlighted[i];
+                DateTime thisDay = DateTime.Today.Date;
+                // update record
+                System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                cmd.Connection = connectionWord;
+
+                cmd.CommandText = "INSERT Words (word, levelRead, levelWrite, dataAdd, highlighted) VALUES (@wordSaveT, 1, 0, @thisDayT, 1)";
+                cmd.Parameters.AddWithValue("@wordSaveT", wordSave);
+                cmd.Parameters.AddWithValue("@thisDayT", thisDay);
+
+                cmd.ExecuteNonQuery();
+            }
+            connectionWord.Close();
+            // update the highlighted phrase in database
+            // update all the words 
         }
     }
 }
