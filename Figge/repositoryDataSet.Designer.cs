@@ -697,6 +697,8 @@ namespace Figge {
             
             private global::System.Data.DataColumn columnhighlighted;
             
+            private global::System.Data.DataColumn columndateHighlight;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public WordsDataTable() {
@@ -788,6 +790,14 @@ namespace Figge {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn dateHighlightColumn {
+                get {
+                    return this.columndateHighlight;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -823,7 +833,7 @@ namespace Figge {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public WordsRow AddWordsRow(int wordId, string word, int levelRead, int levelWrite, System.DateTime dataAdd, string meaning, bool highlighted) {
+            public WordsRow AddWordsRow(int wordId, string word, int levelRead, int levelWrite, System.DateTime dataAdd, string meaning, bool highlighted, string dateHighlight) {
                 WordsRow rowWordsRow = ((WordsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         wordId,
@@ -832,7 +842,8 @@ namespace Figge {
                         levelWrite,
                         dataAdd,
                         meaning,
-                        highlighted};
+                        highlighted,
+                        dateHighlight};
                 rowWordsRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowWordsRow);
                 return rowWordsRow;
@@ -869,6 +880,7 @@ namespace Figge {
                 this.columndataAdd = base.Columns["dataAdd"];
                 this.columnmeaning = base.Columns["meaning"];
                 this.columnhighlighted = base.Columns["highlighted"];
+                this.columndateHighlight = base.Columns["dateHighlight"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -888,6 +900,8 @@ namespace Figge {
                 base.Columns.Add(this.columnmeaning);
                 this.columnhighlighted = new global::System.Data.DataColumn("highlighted", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnhighlighted);
+                this.columndateHighlight = new global::System.Data.DataColumn("dateHighlight", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columndateHighlight);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnwordId}, true));
                 this.columnwordId.AllowDBNull = false;
@@ -899,6 +913,7 @@ namespace Figge {
                 this.columndataAdd.AllowDBNull = false;
                 this.columnmeaning.MaxLength = 200;
                 this.columnhighlighted.AllowDBNull = false;
+                this.columndateHighlight.MaxLength = 10;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1042,6 +1057,8 @@ namespace Figge {
             
             private global::System.Data.DataColumn columnmeaning;
             
+            private global::System.Data.DataColumn columnhighlighted;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public PhrasesDataTable() {
@@ -1117,6 +1134,14 @@ namespace Figge {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn highlightedColumn {
+                get {
+                    return this.columnhighlighted;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1152,14 +1177,15 @@ namespace Figge {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public PhrasesRow AddPhrasesRow(int Id, string phrase, System.DateTime dataAdd, int level, string meaning) {
+            public PhrasesRow AddPhrasesRow(int Id, string phrase, System.DateTime dataAdd, int level, string meaning, bool highlighted) {
                 PhrasesRow rowPhrasesRow = ((PhrasesRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Id,
                         phrase,
                         dataAdd,
                         level,
-                        meaning};
+                        meaning,
+                        highlighted};
                 rowPhrasesRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPhrasesRow);
                 return rowPhrasesRow;
@@ -1194,6 +1220,7 @@ namespace Figge {
                 this.columndataAdd = base.Columns["dataAdd"];
                 this.columnlevel = base.Columns["level"];
                 this.columnmeaning = base.Columns["meaning"];
+                this.columnhighlighted = base.Columns["highlighted"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1209,6 +1236,8 @@ namespace Figge {
                 base.Columns.Add(this.columnlevel);
                 this.columnmeaning = new global::System.Data.DataColumn("meaning", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnmeaning);
+                this.columnhighlighted = new global::System.Data.DataColumn("highlighted", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnhighlighted);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnId}, true));
                 this.columnId.AllowDBNull = false;
@@ -1540,6 +1569,22 @@ namespace Figge {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string dateHighlight {
+                get {
+                    try {
+                        return ((string)(this[this.tableWords.dateHighlightColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'dateHighlight\' in table \'Words\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableWords.dateHighlightColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsmeaningNull() {
                 return this.IsNull(this.tableWords.meaningColumn);
             }
@@ -1548,6 +1593,18 @@ namespace Figge {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetmeaningNull() {
                 this[this.tableWords.meaningColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsdateHighlightNull() {
+                return this.IsNull(this.tableWords.dateHighlightColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetdateHighlightNull() {
+                this[this.tableWords.dateHighlightColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -1627,6 +1684,22 @@ namespace Figge {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool highlighted {
+                get {
+                    try {
+                        return ((bool)(this[this.tablePhrases.highlightedColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'highlighted\' in table \'Phrases\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePhrases.highlightedColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsmeaningNull() {
                 return this.IsNull(this.tablePhrases.meaningColumn);
             }
@@ -1635,6 +1708,18 @@ namespace Figge {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetmeaningNull() {
                 this[this.tablePhrases.meaningColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IshighlightedNull() {
+                return this.IsNull(this.tablePhrases.highlightedColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SethighlightedNull() {
+                this[this.tablePhrases.highlightedColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -2252,10 +2337,11 @@ SELECT sentenceId, sentence, dataAdd, level, note, highlighted FROM Sentences WH
             tableMapping.ColumnMappings.Add("dataAdd", "dataAdd");
             tableMapping.ColumnMappings.Add("meaning", "meaning");
             tableMapping.ColumnMappings.Add("highlighted", "highlighted");
+            tableMapping.ColumnMappings.Add("dateHighlight", "dateHighlight");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Words] WHERE (([wordId] = @Original_wordId) AND ([word] = @Original_word) AND ([levelRead] = @Original_levelRead) AND ([levelWrite] = @Original_levelWrite) AND ([dataAdd] = @Original_dataAdd) AND ((@IsNull_meaning = 1 AND [meaning] IS NULL) OR ([meaning] = @Original_meaning)) AND ([highlighted] = @Original_highlighted))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Words] WHERE (([wordId] = @Original_wordId) AND ([word] = @Original_word) AND ([levelRead] = @Original_levelRead) AND ([levelWrite] = @Original_levelWrite) AND ([dataAdd] = @Original_dataAdd) AND ((@IsNull_meaning = 1 AND [meaning] IS NULL) OR ([meaning] = @Original_meaning)) AND ([highlighted] = @Original_highlighted) AND ((@IsNull_dateHighlight = 1 AND [dateHighlight] IS NULL) OR ([dateHighlight] = @Original_dateHighlight)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_wordId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "wordId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_word", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "word", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -2265,30 +2351,32 @@ SELECT sentenceId, sentence, dataAdd, level, note, highlighted FROM Sentences WH
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_meaning", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_meaning", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_highlighted", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_dateHighlight", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateHighlight", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dateHighlight", global::System.Data.SqlDbType.NChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateHighlight", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Words] ([wordId], [word], [levelRead], [levelWrite], [dataAdd], [meaning], [highlighted]) VALUES (@wordId, @word, @levelRead, @levelWrite, @dataAdd, @meaning, @highlighted);
-SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM Words WHERE (wordId = @wordId)";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Words] ([word], [levelRead], [levelWrite], [dataAdd], [meaning], [highlighted], [dateHighlight]) VALUES (@word, @levelRead, @levelWrite, @dataAdd, @meaning, @highlighted, @dateHighlight);
+SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted, dateHighlight FROM Words WHERE (wordId = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@wordId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "wordId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@word", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "word", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@levelRead", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "levelRead", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@levelWrite", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "levelWrite", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dataAdd", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataAdd", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@meaning", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@highlighted", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dateHighlight", global::System.Data.SqlDbType.NChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateHighlight", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [Words] SET [wordId] = @wordId, [word] = @word, [levelRead] = @levelRead, [levelWrite] = @levelWrite, [dataAdd] = @dataAdd, [meaning] = @meaning, [highlighted] = @highlighted WHERE (([wordId] = @Original_wordId) AND ([word] = @Original_word) AND ([levelRead] = @Original_levelRead) AND ([levelWrite] = @Original_levelWrite) AND ([dataAdd] = @Original_dataAdd) AND ((@IsNull_meaning = 1 AND [meaning] IS NULL) OR ([meaning] = @Original_meaning)) AND ([highlighted] = @Original_highlighted));
-SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM Words WHERE (wordId = @wordId)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [Words] SET [word] = @word, [levelRead] = @levelRead, [levelWrite] = @levelWrite, [dataAdd] = @dataAdd, [meaning] = @meaning, [highlighted] = @highlighted, [dateHighlight] = @dateHighlight WHERE (([wordId] = @Original_wordId) AND ([word] = @Original_word) AND ([levelRead] = @Original_levelRead) AND ([levelWrite] = @Original_levelWrite) AND ([dataAdd] = @Original_dataAdd) AND ((@IsNull_meaning = 1 AND [meaning] IS NULL) OR ([meaning] = @Original_meaning)) AND ([highlighted] = @Original_highlighted) AND ((@IsNull_dateHighlight = 1 AND [dateHighlight] IS NULL) OR ([dateHighlight] = @Original_dateHighlight)));
+SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted, dateHighlight FROM Words WHERE (wordId = @wordId)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@wordId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "wordId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@word", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "word", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@levelRead", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "levelRead", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@levelWrite", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "levelWrite", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dataAdd", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataAdd", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@meaning", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@highlighted", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dateHighlight", global::System.Data.SqlDbType.NChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateHighlight", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_wordId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "wordId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_word", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "word", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_levelRead", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "levelRead", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -2297,6 +2385,9 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_meaning", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_meaning", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_highlighted", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_dateHighlight", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateHighlight", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dateHighlight", global::System.Data.SqlDbType.NChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateHighlight", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@wordId", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "wordId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2312,8 +2403,8 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM Wo" +
-                "rds";
+            this._commandCollection[0].CommandText = "SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted, dateHi" +
+                "ghlight FROM Words";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -2374,7 +2465,7 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_wordId, string Original_word, int Original_levelRead, int Original_levelWrite, System.DateTime Original_dataAdd, string Original_meaning, bool Original_highlighted) {
+        public virtual int Delete(int Original_wordId, string Original_word, int Original_levelRead, int Original_levelWrite, System.DateTime Original_dataAdd, string Original_meaning, bool Original_highlighted, string Original_dateHighlight) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_wordId));
             if ((Original_word == null)) {
                 throw new global::System.ArgumentNullException("Original_word");
@@ -2394,6 +2485,14 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
                 this.Adapter.DeleteCommand.Parameters[6].Value = ((string)(Original_meaning));
             }
             this.Adapter.DeleteCommand.Parameters[7].Value = ((bool)(Original_highlighted));
+            if ((Original_dateHighlight == null)) {
+                this.Adapter.DeleteCommand.Parameters[8].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[9].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[8].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[9].Value = ((string)(Original_dateHighlight));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -2414,24 +2513,29 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(int wordId, string word, int levelRead, int levelWrite, System.DateTime dataAdd, string meaning, bool highlighted) {
-            this.Adapter.InsertCommand.Parameters[0].Value = ((int)(wordId));
+        public virtual int Insert(string word, int levelRead, int levelWrite, System.DateTime dataAdd, string meaning, bool highlighted, string dateHighlight) {
             if ((word == null)) {
                 throw new global::System.ArgumentNullException("word");
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(word));
+                this.Adapter.InsertCommand.Parameters[0].Value = ((string)(word));
             }
-            this.Adapter.InsertCommand.Parameters[2].Value = ((int)(levelRead));
-            this.Adapter.InsertCommand.Parameters[3].Value = ((int)(levelWrite));
-            this.Adapter.InsertCommand.Parameters[4].Value = ((System.DateTime)(dataAdd));
+            this.Adapter.InsertCommand.Parameters[1].Value = ((int)(levelRead));
+            this.Adapter.InsertCommand.Parameters[2].Value = ((int)(levelWrite));
+            this.Adapter.InsertCommand.Parameters[3].Value = ((System.DateTime)(dataAdd));
             if ((meaning == null)) {
-                this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
+                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[5].Value = ((string)(meaning));
+                this.Adapter.InsertCommand.Parameters[4].Value = ((string)(meaning));
             }
-            this.Adapter.InsertCommand.Parameters[6].Value = ((bool)(highlighted));
+            this.Adapter.InsertCommand.Parameters[5].Value = ((bool)(highlighted));
+            if ((dateHighlight == null)) {
+                this.Adapter.InsertCommand.Parameters[6].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[6].Value = ((string)(dateHighlight));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -2452,24 +2556,45 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(int wordId, string word, int levelRead, int levelWrite, System.DateTime dataAdd, string meaning, bool highlighted, int Original_wordId, string Original_word, int Original_levelRead, int Original_levelWrite, System.DateTime Original_dataAdd, string Original_meaning, bool Original_highlighted) {
-            this.Adapter.UpdateCommand.Parameters[0].Value = ((int)(wordId));
+        public virtual int Update(
+                    string word, 
+                    int levelRead, 
+                    int levelWrite, 
+                    System.DateTime dataAdd, 
+                    string meaning, 
+                    bool highlighted, 
+                    string dateHighlight, 
+                    int Original_wordId, 
+                    string Original_word, 
+                    int Original_levelRead, 
+                    int Original_levelWrite, 
+                    System.DateTime Original_dataAdd, 
+                    string Original_meaning, 
+                    bool Original_highlighted, 
+                    string Original_dateHighlight, 
+                    int wordId) {
             if ((word == null)) {
                 throw new global::System.ArgumentNullException("word");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(word));
+                this.Adapter.UpdateCommand.Parameters[0].Value = ((string)(word));
             }
-            this.Adapter.UpdateCommand.Parameters[2].Value = ((int)(levelRead));
-            this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(levelWrite));
-            this.Adapter.UpdateCommand.Parameters[4].Value = ((System.DateTime)(dataAdd));
+            this.Adapter.UpdateCommand.Parameters[1].Value = ((int)(levelRead));
+            this.Adapter.UpdateCommand.Parameters[2].Value = ((int)(levelWrite));
+            this.Adapter.UpdateCommand.Parameters[3].Value = ((System.DateTime)(dataAdd));
             if ((meaning == null)) {
-                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(meaning));
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(meaning));
             }
-            this.Adapter.UpdateCommand.Parameters[6].Value = ((bool)(highlighted));
+            this.Adapter.UpdateCommand.Parameters[5].Value = ((bool)(highlighted));
+            if ((dateHighlight == null)) {
+                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((string)(dateHighlight));
+            }
             this.Adapter.UpdateCommand.Parameters[7].Value = ((int)(Original_wordId));
             if ((Original_word == null)) {
                 throw new global::System.ArgumentNullException("Original_word");
@@ -2489,6 +2614,15 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
                 this.Adapter.UpdateCommand.Parameters[13].Value = ((string)(Original_meaning));
             }
             this.Adapter.UpdateCommand.Parameters[14].Value = ((bool)(Original_highlighted));
+            if ((Original_dateHighlight == null)) {
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[16].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((string)(Original_dateHighlight));
+            }
+            this.Adapter.UpdateCommand.Parameters[17].Value = ((int)(wordId));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -2509,8 +2643,8 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string word, int levelRead, int levelWrite, System.DateTime dataAdd, string meaning, bool highlighted, int Original_wordId, string Original_word, int Original_levelRead, int Original_levelWrite, System.DateTime Original_dataAdd, string Original_meaning, bool Original_highlighted) {
-            return this.Update(Original_wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted, Original_wordId, Original_word, Original_levelRead, Original_levelWrite, Original_dataAdd, Original_meaning, Original_highlighted);
+        public virtual int Update(string word, int levelRead, int levelWrite, System.DateTime dataAdd, string meaning, bool highlighted, string dateHighlight, int Original_wordId, string Original_word, int Original_levelRead, int Original_levelWrite, System.DateTime Original_dataAdd, string Original_meaning, bool Original_highlighted, string Original_dateHighlight) {
+            return this.Update(word, levelRead, levelWrite, dataAdd, meaning, highlighted, dateHighlight, Original_wordId, Original_word, Original_levelRead, Original_levelWrite, Original_dataAdd, Original_meaning, Original_highlighted, Original_dateHighlight, Original_wordId);
         }
     }
     
@@ -2640,13 +2774,11 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
             tableMapping.ColumnMappings.Add("dataAdd", "dataAdd");
             tableMapping.ColumnMappings.Add("level", "level");
             tableMapping.ColumnMappings.Add("meaning", "meaning");
+            tableMapping.ColumnMappings.Add("highlighted", "highlighted");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[Phrases] WHERE (([Id] = @Original_Id) AND ([phrase] = @Origina" +
-                "l_phrase) AND ([dataAdd] = @Original_dataAdd) AND ([level] = @Original_level) AN" +
-                "D ((@IsNull_meaning = 1 AND [meaning] IS NULL) OR ([meaning] = @Original_meaning" +
-                ")))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Phrases] WHERE (([Id] = @Original_Id) AND ([phrase] = @Original_phrase) AND ([dataAdd] = @Original_dataAdd) AND ([level] = @Original_level) AND ((@IsNull_meaning = 1 AND [meaning] IS NULL) OR ([meaning] = @Original_meaning)) AND ((@IsNull_highlighted = 1 AND [highlighted] IS NULL) OR ([highlighted] = @Original_highlighted)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_phrase", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "phrase", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -2654,33 +2786,38 @@ SELECT wordId, word, levelRead, levelWrite, dataAdd, meaning, highlighted FROM W
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_level", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "level", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_meaning", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_meaning", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_highlighted", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_highlighted", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[Phrases] ([Id], [phrase], [dataAdd], [level], [meaning]) VALUE" +
-                "S (@Id, @phrase, @dataAdd, @level, @meaning);\r\nSELECT Id, phrase, dataAdd, level" +
-                ", meaning FROM Phrases WHERE (Id = @Id)";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [Phrases] ([phrase], [dataAdd], [level], [meaning], [highlighted]) VA" +
+                "LUES (@phrase, @dataAdd, @level, @meaning, @highlighted);\r\nSELECT Id, phrase, da" +
+                "taAdd, level, meaning, highlighted FROM Phrases WHERE (Id = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@phrase", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "phrase", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dataAdd", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataAdd", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@level", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "level", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@meaning", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@highlighted", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[Phrases] SET [Id] = @Id, [phrase] = @phrase, [dataAdd] = @dataAdd, [level] = @level, [meaning] = @meaning WHERE (([Id] = @Original_Id) AND ([phrase] = @Original_phrase) AND ([dataAdd] = @Original_dataAdd) AND ([level] = @Original_level) AND ((@IsNull_meaning = 1 AND [meaning] IS NULL) OR ([meaning] = @Original_meaning)));
-SELECT Id, phrase, dataAdd, level, meaning FROM Phrases WHERE (Id = @Id)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [Phrases] SET [phrase] = @phrase, [dataAdd] = @dataAdd, [level] = @level, [meaning] = @meaning, [highlighted] = @highlighted WHERE (([Id] = @Original_Id) AND ([phrase] = @Original_phrase) AND ([dataAdd] = @Original_dataAdd) AND ([level] = @Original_level) AND ((@IsNull_meaning = 1 AND [meaning] IS NULL) OR ([meaning] = @Original_meaning)) AND ((@IsNull_highlighted = 1 AND [highlighted] IS NULL) OR ([highlighted] = @Original_highlighted)));
+SELECT Id, phrase, dataAdd, level, meaning, highlighted FROM Phrases WHERE (Id = @Id)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@phrase", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "phrase", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dataAdd", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataAdd", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@level", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "level", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@meaning", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@highlighted", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_phrase", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "phrase", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dataAdd", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataAdd", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_level", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "level", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_meaning", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_meaning", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "meaning", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_highlighted", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_highlighted", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "highlighted", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2696,7 +2833,7 @@ SELECT Id, phrase, dataAdd, level, meaning FROM Phrases WHERE (Id = @Id)";
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT Id, phrase, dataAdd, [level], meaning FROM dbo.Phrases";
+            this._commandCollection[0].CommandText = "SELECT Id, phrase, dataAdd, level, meaning, highlighted FROM Phrases";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -2757,7 +2894,7 @@ SELECT Id, phrase, dataAdd, level, meaning FROM Phrases WHERE (Id = @Id)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_Id, string Original_phrase, System.DateTime Original_dataAdd, int Original_level, string Original_meaning) {
+        public virtual int Delete(int Original_Id, string Original_phrase, System.DateTime Original_dataAdd, int Original_level, string Original_meaning, global::System.Nullable<bool> Original_highlighted) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_Id));
             if ((Original_phrase == null)) {
                 throw new global::System.ArgumentNullException("Original_phrase");
@@ -2774,6 +2911,14 @@ SELECT Id, phrase, dataAdd, level, meaning FROM Phrases WHERE (Id = @Id)";
             else {
                 this.Adapter.DeleteCommand.Parameters[4].Value = ((object)(0));
                 this.Adapter.DeleteCommand.Parameters[5].Value = ((string)(Original_meaning));
+            }
+            if ((Original_highlighted.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[6].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[7].Value = ((bool)(Original_highlighted.Value));
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[6].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[7].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -2795,21 +2940,26 @@ SELECT Id, phrase, dataAdd, level, meaning FROM Phrases WHERE (Id = @Id)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(int Id, string phrase, System.DateTime dataAdd, int level, string meaning) {
-            this.Adapter.InsertCommand.Parameters[0].Value = ((int)(Id));
+        public virtual int Insert(string phrase, System.DateTime dataAdd, int level, string meaning, global::System.Nullable<bool> highlighted) {
             if ((phrase == null)) {
                 throw new global::System.ArgumentNullException("phrase");
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(phrase));
+                this.Adapter.InsertCommand.Parameters[0].Value = ((string)(phrase));
             }
-            this.Adapter.InsertCommand.Parameters[2].Value = ((System.DateTime)(dataAdd));
-            this.Adapter.InsertCommand.Parameters[3].Value = ((int)(level));
+            this.Adapter.InsertCommand.Parameters[1].Value = ((System.DateTime)(dataAdd));
+            this.Adapter.InsertCommand.Parameters[2].Value = ((int)(level));
             if ((meaning == null)) {
-                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
+                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[4].Value = ((string)(meaning));
+                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(meaning));
+            }
+            if ((highlighted.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[4].Value = ((bool)(highlighted.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -2831,21 +2981,26 @@ SELECT Id, phrase, dataAdd, level, meaning FROM Phrases WHERE (Id = @Id)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(int Id, string phrase, System.DateTime dataAdd, int level, string meaning, int Original_Id, string Original_phrase, System.DateTime Original_dataAdd, int Original_level, string Original_meaning) {
-            this.Adapter.UpdateCommand.Parameters[0].Value = ((int)(Id));
+        public virtual int Update(string phrase, System.DateTime dataAdd, int level, string meaning, global::System.Nullable<bool> highlighted, int Original_Id, string Original_phrase, System.DateTime Original_dataAdd, int Original_level, string Original_meaning, global::System.Nullable<bool> Original_highlighted, int Id) {
             if ((phrase == null)) {
                 throw new global::System.ArgumentNullException("phrase");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(phrase));
+                this.Adapter.UpdateCommand.Parameters[0].Value = ((string)(phrase));
             }
-            this.Adapter.UpdateCommand.Parameters[2].Value = ((System.DateTime)(dataAdd));
-            this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(level));
+            this.Adapter.UpdateCommand.Parameters[1].Value = ((System.DateTime)(dataAdd));
+            this.Adapter.UpdateCommand.Parameters[2].Value = ((int)(level));
             if ((meaning == null)) {
-                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(meaning));
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(meaning));
+            }
+            if ((highlighted.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((bool)(highlighted.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             this.Adapter.UpdateCommand.Parameters[5].Value = ((int)(Original_Id));
             if ((Original_phrase == null)) {
@@ -2864,6 +3019,15 @@ SELECT Id, phrase, dataAdd, level, meaning FROM Phrases WHERE (Id = @Id)";
                 this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(0));
                 this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(Original_meaning));
             }
+            if ((Original_highlighted.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((bool)(Original_highlighted.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[13].Value = ((int)(Id));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -2884,8 +3048,8 @@ SELECT Id, phrase, dataAdd, level, meaning FROM Phrases WHERE (Id = @Id)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string phrase, System.DateTime dataAdd, int level, string meaning, int Original_Id, string Original_phrase, System.DateTime Original_dataAdd, int Original_level, string Original_meaning) {
-            return this.Update(Original_Id, phrase, dataAdd, level, meaning, Original_Id, Original_phrase, Original_dataAdd, Original_level, Original_meaning);
+        public virtual int Update(string phrase, System.DateTime dataAdd, int level, string meaning, global::System.Nullable<bool> highlighted, int Original_Id, string Original_phrase, System.DateTime Original_dataAdd, int Original_level, string Original_meaning, global::System.Nullable<bool> Original_highlighted) {
+            return this.Update(phrase, dataAdd, level, meaning, highlighted, Original_Id, Original_phrase, Original_dataAdd, Original_level, Original_meaning, Original_highlighted, Original_Id);
         }
     }
     

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -180,32 +181,84 @@ namespace Figge
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            if (allTextLen == 0)
+            {
+                return;
+            }
+            
+            // todo: exclude highlighted word from all the text
+
+            DateTime thisDay = DateTime.Today.Date;
+
             System.Data.SqlClient.SqlConnection connectionWord =
-    new System.Data.SqlClient.SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\yunzh\\vc_projects\\Figge\\Figge\\repository.mdf;Integrated Security=True");
+                new System.Data.SqlClient.SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;" + 
+                "AttachDbFilename=C:\\Users\\yunzh\\vc_projects\\Figge\\Figge\\repository.mdf;" + 
+                "Integrated Security=True;" +
+                "MultipleActiveResultSets=true");
 
             connectionWord.Open();
 
+            // data base query
+            System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.Connection = connectionWord;
+
+            cmd.CommandText = "SELECT * FROM Words"; // todo: optimize, only select highlighted
+     
+            List<string> listWordsRead = new List<string>();
+            List<int> listIDRead = new List<int>();
+            List<int> listLevelRead = new List<int>();
+            List<int> listLevelWrite = new List<int>();
+
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    listWordsRead.Add(reader["word"].ToString());
+                    listIDRead.Add(Convert.ToInt32(reader["wordId"]));
+                    listLevelRead.Add(Convert.ToInt32(reader["levelRead"]));
+                    listLevelWrite.Add(Convert.ToInt32(reader["levelWrite"]));
+                }
+            }
+            reader.Close();
+
             // update the highlighted word in database
-            for (int i = 0;i < wordsHighlighted.Count;i++)
+            cmd.CommandText = "UPDATE Words SET levelRead=@newlevelRead, highlighted=1, dateHighlight=@dateH WHERE wordId=@wordIdTemp";
+            cmd.Parameters.AddWithValue("@dateH", thisDay);
+            for (int i = wordsHighlighted.Count - 1; i >= 0; i--)
             {
                 // prepare record
-                string wordSave = wordsHighlighted[i];
-                DateTime thisDay = DateTime.Today.Date;
-                // update record
-                System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
-                cmd.CommandType = System.Data.CommandType.Text;
-
-                cmd.Connection = connectionWord;
-
-                cmd.CommandText = "INSERT Words (word, levelRead, levelWrite, dataAdd, highlighted) VALUES (@wordSaveT, 1, 0, @thisDayT, 1)";
-                cmd.Parameters.AddWithValue("@wordSaveT", wordSave);
-                cmd.Parameters.AddWithValue("@thisDayT", thisDay);
-
-                cmd.ExecuteNonQuery();
+                string wordInput = wordsHighlighted[i];
+                int wordIndex = listWordsRead.FindIndex(x => x == wordInput);
+                if (-1 != wordIndex)
+                {
+                    cmd.Parameters.AddWithValue("@newlevelRead", listLevelRead[wordIndex] + 1);
+                    cmd.Parameters.AddWithValue("@wordIdTemp", listIDRead[wordIndex]);
+                    cmd.ExecuteNonQuery();
+                    cmd.Parameters.RemoveAt("@newlevelRead");
+                    cmd.Parameters.RemoveAt("@wordIdTemp");
+                    wordsHighlighted.RemoveAt(i);
+                }
             }
-            connectionWord.Close();
+
+            // insert the highlighted word in database
+            cmd.CommandText = "INSERT Words (word, levelRead, levelWrite, dataAdd, highlighted, dateHighlight) " +
+                "VALUES (@wordSaveT, 1, 0, @thisDayT, 1, @thisDayT)";
+            cmd.Parameters.AddWithValue("@thisDayT", thisDay);
+
+            for (int i = 0;i < wordsHighlighted.Count;i++)
+            {
+                string wordSave = wordsHighlighted[i];
+                cmd.Parameters.AddWithValue("@wordSaveT", wordSave);
+                cmd.ExecuteNonQuery();
+                cmd.Parameters.RemoveAt("@wordSaveT");
+            }
+
             // update the highlighted phrase in database
-            // update all the words 
+
+            // update all the words
+            connectionWord.Close();
         }
     }
 }
