@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
@@ -17,53 +16,119 @@ namespace Figge
 
         private Color buttonNewWordBackColor;
         private Color buttonNewPhaseBackColor;
+        private Color buttonClearMarkBackColor;
         private List<string> wordsHighlighted;
         private List<string> phrasesHighlighted;
         private int allTextLen;
         private string allText;
+        private DateTime createdTime;
+        private Boolean savedBefore;
 
         public NewInput()
         {
             InitializeComponent();
             buttonNewWordBackColor = DefaultBackColor;
             buttonNewPhaseBackColor = DefaultBackColor;
+            buttonClearMarkBackColor = DefaultBackColor;
             wordsHighlighted = new List<string>();
             phrasesHighlighted = new List<string>();
             allTextLen = 0;
+            createdTime = DateTime.Now;
+            Console.Write("createdTime: " + createdTime + '\n');
+            savedBefore = false;
+        }
+
+        // this is to read from existing record, so there is createdTime
+        // this createdTime is used to find the right place to save it back
+        public NewInput(DateTime createdTime)
+        {
+            InitializeComponent();
+            buttonNewWordBackColor = DefaultBackColor;
+            buttonNewPhaseBackColor = DefaultBackColor;
+            buttonClearMarkBackColor = DefaultBackColor;
+            wordsHighlighted = new List<string>();
+            phrasesHighlighted = new List<string>();
+            allTextLen = 0;
+            this.createdTime = createdTime;
+            savedBefore = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // toggle between default and Yellow
+            // Reset background of buttonNewPhrase
+            buttonNewPhaseBackColor = DefaultBackColor;
+            buttonNewPhrase.BackColor = buttonNewPhaseBackColor;
+            // Reset background of clearMark
+            buttonClearMarkBackColor = DefaultBackColor;
+            ClearMark.BackColor = buttonClearMarkBackColor;
+
+            // toggle between default and Orange
             if (buttonNewWordBackColor == DefaultBackColor)
             {
-                buttonNewWordBackColor = Color.Yellow;
+                buttonNewWordBackColor = Color.Orange;
+                if (richTextBoxInput.SelectedText.Length > 0 &&
+                    richTextBoxInput.SelectedText.Length < 50)
+                {
+                    richTextBoxInput.SelectionBackColor = Color.Orange;
+                }
             }
             else
             {
                 buttonNewWordBackColor = DefaultBackColor;
             }
             buttonNewWords.BackColor = buttonNewWordBackColor;
-            // Reset background of buttonNewPhrase
-            buttonNewPhaseBackColor = DefaultBackColor;
-            buttonNewPhrase.BackColor = buttonNewPhaseBackColor;
         }
 
         private void buttonNewPhrase_Click(object sender, EventArgs e)
         {
-            // toggle between default and Green
+            // Reset background of buttonNewWord
+            buttonNewWordBackColor = DefaultBackColor;
+            buttonNewWords.BackColor = buttonNewWordBackColor;
+            // Reset background of clearMark
+            buttonClearMarkBackColor = DefaultBackColor;
+            ClearMark.BackColor = buttonClearMarkBackColor;
+
+            // toggle between default and DodgerBlue
             if (buttonNewPhaseBackColor == DefaultBackColor)
             {
-                buttonNewPhaseBackColor = Color.Green;
+                buttonNewPhaseBackColor = Color.DodgerBlue;
+                if (richTextBoxInput.SelectedText.Length > 0 &&
+                    richTextBoxInput.SelectedText.Length < 50)
+                {
+                    richTextBoxInput.SelectionBackColor = Color.DodgerBlue;
+                }
             }
             else
             {
                 buttonNewPhaseBackColor = DefaultBackColor;
             }
             buttonNewPhrase.BackColor = buttonNewPhaseBackColor;
+        }
+
+        private void ClearMark_Click(object sender, EventArgs e)
+        {
             // Reset background of buttonNewWord
             buttonNewWordBackColor = DefaultBackColor;
             buttonNewWords.BackColor = buttonNewWordBackColor;
+            // Reset background of buttonNewPhrase
+            buttonNewPhaseBackColor = DefaultBackColor;
+            buttonNewPhrase.BackColor = buttonNewPhaseBackColor;
+
+            // toggle between default and White
+            if (buttonClearMarkBackColor == DefaultBackColor)
+            {
+                buttonClearMarkBackColor = Color.White;
+                if (richTextBoxInput.SelectedText.Length > 0 &&
+                    richTextBoxInput.SelectedText.Length < 50)
+                {
+                    richTextBoxInput.SelectionBackColor = richTextBoxInput.BackColor;
+                }
+            }
+            else
+            {
+                buttonClearMarkBackColor = DefaultBackColor;
+            }
+            ClearMark.BackColor = buttonClearMarkBackColor;
         }
 
         private void NewInput_Load(object sender, EventArgs e)
@@ -76,7 +141,7 @@ namespace Figge
             callerForm.Show();
         }
 
-        private void displayList(List<string> l)
+        private void debug_displayList(List<string> l)
         {
             // debug output
             Console.Write("Number of items: " + l.Count + '\n');
@@ -104,115 +169,70 @@ namespace Figge
             {
                 allTextLen = allText.Length;
             }
-
-            for (int i = wordsHighlighted.Count - 1;i >= 0;i--)
-            {
-                if (!allText.Contains(wordsHighlighted[i]))
-                {
-                    wordsHighlighted.RemoveAt(i);
-                }
-            }
-            displayList(wordsHighlighted);
-
-            for (int i = phrasesHighlighted.Count - 1; i >= 0; i--)
-            {
-                if (!allText.Contains(phrasesHighlighted[i]))
-                {
-                    phrasesHighlighted.RemoveAt(i);
-                }
-            }
-            displayList(phrasesHighlighted);
-
         }
 
         private void richTextBoxInput_MouseUp(object sender, MouseEventArgs e)
         {
-            String selectedText = richTextBoxInput.SelectedText;
-            if (selectedText.Length == 0)
+            int length = richTextBoxInput.SelectedText.Length;
+            if (length == 0)
             {
                 return;
             }
-            // todo: remove comma, full stop, exclamation mark, etc.
 
-            if (buttonNewWordBackColor == Color.Yellow)
+            if (buttonNewWordBackColor != DefaultBackColor)
             {
                 // if it is too long, it must be a wrong operation
-                if (selectedText.Length > 50)
+                if (length > 50)
                 {
                     return;
                 }
-                // set yellow back ground to the selected words
-                // todo: check the current background, if it is Green, use another color
-                richTextBoxInput.SelectionBackColor = Color.Yellow;
-
-                // save them into local variabls
-                // todo: split in the proper way
-                foreach (char charactor in selectedText.ToCharArray())
-                {
-                    // const char[] punctuations = { ',', '.', '\?', '!', '，', '。', '？', '！' };
-                    
-                    if (!wordsHighlighted.Contains(charactor.ToString()))
-                    {
-                        Console.Write(charactor);
-                        wordsHighlighted.Add(charactor.ToString());
-                    }
-                }
-
-                // displayList(wordsHighlighted);
+                // set back ground to the selected words
+                // todo: check the current background, if it is not default color,
+                //       use some color mixed
+                richTextBoxInput.SelectionBackColor = buttonNewWordBackColor;
             }
-            else if (buttonNewPhaseBackColor == Color.Green)
+            else if (buttonNewPhaseBackColor != DefaultBackColor)
             {
                 // if it is too long, it must be a wrong operation
-                if (selectedText.Length > 50)
+                if (length > 50)
                 {
                     return;
                 }
-
-                // set green back color to the select phrase
-                // todo: check the current background, if it is Yellow, use another color
-                richTextBoxInput.SelectionBackColor = Color.Green;
-
-                // save them into local variables
-                phrasesHighlighted.Add(selectedText);
-
-                // displayList(phrasesHighlighted);
+                // set back ground to the selected words
+                // todo: check the current background, if it is not default color,
+                //       use some color mixed
+                richTextBoxInput.SelectionBackColor = buttonNewPhaseBackColor;
             }
+            else if (buttonClearMarkBackColor != DefaultBackColor)
+            {
+                richTextBoxInput.SelectionBackColor = richTextBoxInput.BackColor;
+            }
+
         }
+
+        // save as html 5 format
+        // color scheme https://www.w3schools.com/html/html_colors.asp
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (allTextLen == 0)
+            // save or overwrite this piece
+            if (savedBefore)
             {
-                return;
+                // popup a warning dialogue box for overwriting
+                DialogResult ret = MessageBox.Show(null,
+                                                   "Do you want to update by overwriting?",
+                                                   "Warning!",
+                                                   MessageBoxButtons.YesNo);
+                if (ret != DialogResult.OK)
+                {
+                    return;
+                }
             }
-            
-            // save all text into database
 
-            DateTime thisDay = DateTime.Today.Date;
-
-            SqlConnection connectionWord =
-                new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;" + 
-                "AttachDbFilename=C:\\Users\\yunzh\\vc_projects\\Figge\\Figge\\repository.mdf;" + 
-                "Integrated Security=True;" +
-                "MultipleActiveResultSets=true");
-
-            connectionWord.Open();
-
-            // insert the article into the database
-
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = connectionWord;
-
-            cmd.CommandText = "INSERT Articles (content, dateAdd) " +
-                "VALUES (@TextT, @thisDayT)";
-            cmd.Parameters.AddWithValue("@thisDayT", thisDay);
-            cmd.Parameters.AddWithValue("@TextT", richTextBoxInput.Text);
-
-            cmd.ExecuteNonQuery();
-
-            // update all the words
-            connectionWord.Close();
+            // update the savedBefore flag
+            savedBefore = true;
         }
+
+
     }
 }
