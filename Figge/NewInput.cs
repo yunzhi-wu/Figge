@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+
+
 
 namespace Figge
 {
@@ -226,6 +229,32 @@ namespace Figge
                 if (ret != DialogResult.OK)
                 {
                     return;
+                }
+            }
+            else // a newly created record
+            {
+                // open file
+                string path = @"MyLearning.html";
+                if (!File.Exists(path))
+                {
+                    // Create a file to write to.
+                    using (StreamWriter sw = File.CreateText(path))
+                    {
+                        /*
+                        <table style="width:100%">
+                          <tr>
+                            <th>Time Created</th>
+                            <th>Content</th> 
+                          </tr>
+                        </table>
+                        */
+                        sw.WriteLine("<table style=\"width:100%\">");
+                        sw.WriteLine("  <tr>");
+                        sw.WriteLine("    <th>Time Created</th>");
+                        sw.WriteLine("    <th>Content</th>");
+                        sw.WriteLine("  </tr>");
+                        sw.WriteLine("</table>");
+                    }
                 }
             }
 
