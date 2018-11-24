@@ -15,7 +15,7 @@ namespace Figge
 {
     public partial class NewInput : Form
     {
-        public Form callerForm;
+        public MainThread callerForm;
 
         private Color buttonNewWordBackColor;
         private Color buttonNewPhaseBackColor;
@@ -27,9 +27,17 @@ namespace Figge
         private DateTime createdTime;
         private Boolean savedBefore;
 
-        public NewInput()
+        private string m_path;
+
+        private string[] m_records;
+
+        public NewInput(string path, string[] records)
         {
             InitializeComponent();
+
+            m_path = path;
+            m_records = records;
+
             buttonNewWordBackColor = DefaultBackColor;
             buttonNewPhaseBackColor = DefaultBackColor;
             buttonClearMarkBackColor = DefaultBackColor;
@@ -98,7 +106,8 @@ namespace Figge
                 if (richTextBoxInput.SelectedText.Length > 0 &&
                     richTextBoxInput.SelectedText.Length < 50)
                 {
-                    richTextBoxInput.SelectionBackColor = Color.DodgerBlue;
+                    // richTextBoxInput.SelectionBackColor = Color.DodgerBlue;
+                    richTextBoxInput.SelectionColor = Color.Brown;
                 }
             }
             else
@@ -141,6 +150,7 @@ namespace Figge
 
         private void NewInput_FormClosing(object sender, FormClosingEventArgs e)
         {
+            callerForm.UpdateInfo();
             callerForm.Show();
         }
 
@@ -233,35 +243,40 @@ namespace Figge
             }
             else // a newly created record
             {
-                // open file
-                string path = @"MyLearning.html";
-                if (!File.Exists(path))
+                // attach the record at the end
+                int length = m_records.Length;
+
+                string[] newRecord = new string[4];
+
+                /*
+                 <tr>
+                   <td>time</td>
+                   <td>content</td> 
+                 </tr>
+                 */
+                
+                newRecord[0] = "  <tr>";
+                newRecord[1] = "    <td>" + createdTime + "</td>";
+                newRecord[2] = "    <td>" + richTextBoxInput.Text + "</td>";
+                newRecord[3] = "  </tr>";
+
+                using (StreamWriter wr = new StreamWriter(m_path))
                 {
-                    // Create a file to write to.
-                    using (StreamWriter sw = File.CreateText(path))
+                    for (int i = 0; i < length - 1; i++)
                     {
-                        /*
-                        <table style="width:100%">
-                          <tr>
-                            <th>Time Created</th>
-                            <th>Content</th> 
-                          </tr>
-                        </table>
-                        */
-                        sw.WriteLine("<table style=\"width:100%\">");
-                        sw.WriteLine("  <tr>");
-                        sw.WriteLine("    <th>Time Created</th>");
-                        sw.WriteLine("    <th>Content</th>");
-                        sw.WriteLine("  </tr>");
-                        sw.WriteLine("</table>");
+                        wr.WriteLine(m_records[i]);
                     }
+                    for (int i = 0; i < 4; i++)
+                    {
+                        wr.WriteLine(newRecord[i]);
+                    }
+                    wr.WriteLine(m_records[length - 1]);
                 }
             }
 
             // update the savedBefore flag
             savedBefore = true;
         }
-
 
     }
 }
