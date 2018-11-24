@@ -15,13 +15,19 @@ namespace Figge
 {
     public partial class NewInput : Form
     {
+        enum ColorUseFor
+        {
+            background,
+            font
+        };
+
         public MainThread callerForm;
 
         private Color buttonNewWordBackColor;
         private Color buttonNewPhaseBackColor;
         private Color buttonClearMarkBackColor;
-        private List<string> wordsHighlighted;
-        private List<string> phrasesHighlighted;
+        private List<string> m_words_l;
+        private List<string> m_phrase_l;
         private int allTextLen;
         private string allText;
         private DateTime createdTime;
@@ -30,19 +36,19 @@ namespace Figge
         private string m_path;
 
         private string[] m_records;
-
+ 
         public NewInput(string path, string[] records)
         {
             InitializeComponent();
 
             m_path = path;
             m_records = records;
-
+            
             buttonNewWordBackColor = DefaultBackColor;
             buttonNewPhaseBackColor = DefaultBackColor;
             buttonClearMarkBackColor = DefaultBackColor;
-            wordsHighlighted = new List<string>();
-            phrasesHighlighted = new List<string>();
+            m_words_l = new List<string>();
+            m_phrase_l = new List<string>();
             allTextLen = 0;
             createdTime = DateTime.Now;
             Console.Write("createdTime: " + createdTime + '\n');
@@ -57,8 +63,8 @@ namespace Figge
             buttonNewWordBackColor = DefaultBackColor;
             buttonNewPhaseBackColor = DefaultBackColor;
             buttonClearMarkBackColor = DefaultBackColor;
-            wordsHighlighted = new List<string>();
-            phrasesHighlighted = new List<string>();
+            m_words_l = new List<string>();
+            m_phrase_l = new List<string>();
             allTextLen = 0;
             this.createdTime = createdTime;
             savedBefore = true;
@@ -80,7 +86,8 @@ namespace Figge
                 if (richTextBoxInput.SelectedText.Length > 0 &&
                     richTextBoxInput.SelectedText.Length < 50)
                 {
-                    richTextBoxInput.SelectionBackColor = Color.Orange;
+                    addToList(richTextBoxInput.SelectedText, m_words_l);
+                    updateAllText(richTextBoxInput.SelectedText, buttonNewWordBackColor, ColorUseFor.background);
                 }
             }
             else
@@ -103,11 +110,11 @@ namespace Figge
             if (buttonNewPhaseBackColor == DefaultBackColor)
             {
                 buttonNewPhaseBackColor = Color.DodgerBlue;
-                if (richTextBoxInput.SelectedText.Length > 0 &&
+                if (richTextBoxInput.SelectedText.Length > 1 &&
                     richTextBoxInput.SelectedText.Length < 50)
                 {
-                    // richTextBoxInput.SelectionBackColor = Color.DodgerBlue;
-                    richTextBoxInput.SelectionColor = Color.Brown;
+                    addToList(richTextBoxInput.SelectedText, m_phrase_l);
+                    updateAllText(richTextBoxInput.SelectedText, buttonNewPhaseBackColor, 0);
                 }
             }
             else
@@ -187,6 +194,8 @@ namespace Figge
         private void richTextBoxInput_MouseUp(object sender, MouseEventArgs e)
         {
             int length = richTextBoxInput.SelectedText.Length;
+            int start_pos_old = richTextBoxInput.SelectionStart;
+
             if (length == 0)
             {
                 return;
@@ -203,6 +212,8 @@ namespace Figge
                 // todo: check the current background, if it is not default color,
                 //       use some color mixed
                 richTextBoxInput.SelectionBackColor = buttonNewWordBackColor;
+                addToList(richTextBoxInput.SelectedText, m_words_l);
+                updateAllText(richTextBoxInput.SelectedText, buttonNewWordBackColor, ColorUseFor.background);
             }
             else if (buttonNewPhaseBackColor != DefaultBackColor)
             {
@@ -215,12 +226,16 @@ namespace Figge
                 // todo: check the current background, if it is not default color,
                 //       use some color mixed
                 richTextBoxInput.SelectionBackColor = buttonNewPhaseBackColor;
+                addToList(richTextBoxInput.SelectedText, m_phrase_l);
+                updateAllText(richTextBoxInput.SelectedText, buttonNewPhaseBackColor, ColorUseFor.background);
             }
             else if (buttonClearMarkBackColor != DefaultBackColor)
             {
                 richTextBoxInput.SelectionBackColor = richTextBoxInput.BackColor;
             }
 
+            // restore the selection
+            richTextBoxInput.Select(start_pos_old, length);
         }
 
         // save as html 5 format
@@ -276,6 +291,38 @@ namespace Figge
 
             // update the savedBefore flag
             savedBefore = true;
+        }
+
+        private void addToList(string item, List<string> list)
+        {
+            // check if the same item is in the list already
+            if (list.Contains(item))
+            {
+                return;
+            }
+            int length = list.Count;
+            list.Insert(length, item);
+        }
+
+        private void updateAllText(string item, Color clr, ColorUseFor use)
+        {
+            if (use == ColorUseFor.background)
+            {
+                int start_pos = 0;
+                while (start_pos < richTextBoxInput.Text.Length)
+                {
+                    int index = richTextBoxInput.Text.IndexOf(item, start_pos);
+                    if (index == -1)
+                    {
+                        break;
+                    }
+                    richTextBoxInput.Select(index, item.Length);
+                    richTextBoxInput.SelectionBackColor = clr;
+
+                    start_pos = index + item.Length;
+                }
+            }
+            richTextBoxInput.DeselectAll();
         }
 
     }
