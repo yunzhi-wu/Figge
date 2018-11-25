@@ -29,8 +29,18 @@ namespace Figge
             
             if (m_records.Length == 0)
             {
-                this.m_records = new string[6];
-
+                m_records = new string[16];
+                int i = 0;
+                m_records[i++] = "<head>";
+                m_records[i++] = "<style>";
+                m_records[i++] = "nw {";
+                m_records[i++] = "    background-color: Orange;";
+                m_records[i++] = "}";
+                m_records[i++] = "np {";
+                m_records[i++] = "    background-color: DodgerBlue;";
+                m_records[i++] = "}";
+                m_records[i++] = "</style>";
+                m_records[i++] = "</head>";
                 /*
                 <table style="width:100%">
                   <tr>
@@ -39,15 +49,15 @@ namespace Figge
                   </tr>
                 </table>
                 */
-                this.m_records[0] = "<table style=\"width:100%\">";
-                this.m_records[1] = "  <tr>";
-                this.m_records[2] = "    <th>Time Created</th>";
-                this.m_records[3] = "    <th>Content</th>";
-                this.m_records[4] = "  </tr>";
-                this.m_records[5] = "</table>";
+                m_records[i++] = "<table style=\"width:100%\">";
+                m_records[i++] = "  <tr>";
+                m_records[i++] = "    <th>Time Created</th>";
+                m_records[i++] = "    <th>Content</th>";
+                m_records[i++] = "  </tr>";
+                m_records[i++] = "</table>";
                 using (StreamWriter sw = new StreamWriter(m_path))
                 {
-                    for (int i = 0; i < m_records.Length; i++)
+                    for (i = 0; i < m_records.Length; i++)
                     {
                         sw.WriteLine(m_records[i]);
                     }

@@ -82,12 +82,22 @@ namespace Figge
             // toggle between default and Orange
             if (buttonNewWordBackColor == DefaultBackColor)
             {
-                buttonNewWordBackColor = Color.Orange;
                 if (richTextBoxInput.SelectedText.Length > 0 &&
                     richTextBoxInput.SelectedText.Length < 50)
                 {
-                    addToList(richTextBoxInput.SelectedText, m_words_l);
-                    updateAllText(richTextBoxInput.SelectedText, buttonNewWordBackColor, ColorUseFor.background);
+                    // do not add if it is marked as new phrase
+                    foreach (string item in m_phrase_l)
+                    {
+                        if (item.Contains(richTextBoxInput.SelectedText))
+                        {
+                            return;
+                        }
+                    }
+
+                    buttonNewWordBackColor = Color.Orange;
+
+                    addToListAndUpdateAllText(richTextBoxInput.SelectedText, m_words_l, buttonNewWordBackColor, ColorUseFor.background);
+
                 }
             }
             else
@@ -109,12 +119,21 @@ namespace Figge
             // toggle between default and DodgerBlue
             if (buttonNewPhaseBackColor == DefaultBackColor)
             {
-                buttonNewPhaseBackColor = Color.DodgerBlue;
                 if (richTextBoxInput.SelectedText.Length > 1 &&
                     richTextBoxInput.SelectedText.Length < 50)
                 {
-                    addToList(richTextBoxInput.SelectedText, m_phrase_l);
-                    updateAllText(richTextBoxInput.SelectedText, buttonNewPhaseBackColor, 0);
+                    // remove item from new word list if it is included in this selection
+                    List<string> listCopy = new List<string>(m_words_l.ToArray());
+                    foreach (string item in listCopy)
+                    {
+                        if (richTextBoxInput.SelectedText.Contains(item))
+                        {
+                            m_words_l.Remove(item);
+                        }
+                    }
+                    buttonNewPhaseBackColor = Color.DodgerBlue;
+
+                    addToListAndUpdateAllText(richTextBoxInput.SelectedText, m_phrase_l, buttonNewPhaseBackColor, ColorUseFor.background);
                 }
             }
             else
@@ -137,11 +156,8 @@ namespace Figge
             if (buttonClearMarkBackColor == DefaultBackColor)
             {
                 buttonClearMarkBackColor = Color.White;
-                if (richTextBoxInput.SelectedText.Length > 0 &&
-                    richTextBoxInput.SelectedText.Length < 50)
-                {
-                    richTextBoxInput.SelectionBackColor = richTextBoxInput.BackColor;
-                }
+                removeFromListAndUpdateAllText(m_words_l, richTextBoxInput.BackColor, ColorUseFor.background);
+                removeFromListAndUpdateAllText(m_phrase_l, richTextBoxInput.BackColor, ColorUseFor.background);
             }
             else
             {
@@ -194,8 +210,6 @@ namespace Figge
         private void richTextBoxInput_MouseUp(object sender, MouseEventArgs e)
         {
             int length = richTextBoxInput.SelectedText.Length;
-            int start_pos_old = richTextBoxInput.SelectionStart;
-
             if (length == 0)
             {
                 return;
@@ -208,12 +222,21 @@ namespace Figge
                 {
                     return;
                 }
-                // set back ground to the selected words
+                
                 // todo: check the current background, if it is not default color,
                 //       use some color mixed
-                richTextBoxInput.SelectionBackColor = buttonNewWordBackColor;
-                addToList(richTextBoxInput.SelectedText, m_words_l);
-                updateAllText(richTextBoxInput.SelectedText, buttonNewWordBackColor, ColorUseFor.background);
+
+                // do not add if it is marked as new phrase
+                foreach (string item in m_phrase_l)
+                {
+                    if (item.Contains(richTextBoxInput.SelectedText))
+                    {
+                        return;
+                    }
+                }
+
+                // set back ground to the selected words
+                addToListAndUpdateAllText(richTextBoxInput.SelectedText, m_words_l, buttonNewWordBackColor, ColorUseFor.background);
             }
             else if (buttonNewPhaseBackColor != DefaultBackColor)
             {
@@ -222,20 +245,27 @@ namespace Figge
                 {
                     return;
                 }
+
+                // remove item from new word list if it is included in this selection
+                List<string> listCopy = new List<string>(m_words_l.ToArray());
+                foreach (string item in listCopy)
+                {
+                    if (richTextBoxInput.SelectedText.Contains(item))
+                    {
+                        m_words_l.Remove(item);
+                    }
+                }
+
                 // set back ground to the selected words
                 // todo: check the current background, if it is not default color,
                 //       use some color mixed
-                richTextBoxInput.SelectionBackColor = buttonNewPhaseBackColor;
-                addToList(richTextBoxInput.SelectedText, m_phrase_l);
-                updateAllText(richTextBoxInput.SelectedText, buttonNewPhaseBackColor, ColorUseFor.background);
+                addToListAndUpdateAllText(richTextBoxInput.SelectedText, m_phrase_l, buttonNewPhaseBackColor, ColorUseFor.background);
             }
             else if (buttonClearMarkBackColor != DefaultBackColor)
             {
-                richTextBoxInput.SelectionBackColor = richTextBoxInput.BackColor;
+                removeFromListAndUpdateAllText(m_words_l, richTextBoxInput.BackColor, ColorUseFor.background);
+                removeFromListAndUpdateAllText(m_phrase_l, richTextBoxInput.BackColor, ColorUseFor.background);
             }
-
-            // restore the selection
-            richTextBoxInput.Select(start_pos_old, length);
         }
 
         // save as html 5 format
@@ -269,10 +299,34 @@ namespace Figge
                    <td>content</td> 
                  </tr>
                  */
+
+                string content = string.Copy(richTextBoxInput.Text);
+                string temp = null;
                 
+                if (m_words_l.Count > 0)
+                {
+                    debug_displayList(m_words_l);
+                    foreach (string item in m_words_l)
+                    {
+                        string newitem = "<nw>" + item + "</nw>";
+                        temp = string.Copy(content);
+                        content = temp.Replace(item, newitem);
+                    }
+                }
+                if (m_phrase_l.Count > 0)
+                {
+                    debug_displayList(m_phrase_l);
+                    foreach (string item in m_phrase_l)
+                    {
+                        string newitem = "<np>" + item + "</np>";
+                        temp = string.Copy(content);
+                        content = temp.Replace(item, newitem);
+                    }
+                }
+
                 newRecord[0] = "  <tr>";
                 newRecord[1] = "    <td>" + createdTime + "</td>";
-                newRecord[2] = "    <td>" + richTextBoxInput.Text + "</td>";
+                newRecord[2] = "    <td>" + content + "</td>";
                 newRecord[3] = "  </tr>";
 
                 using (StreamWriter wr = new StreamWriter(m_path))
@@ -293,19 +347,37 @@ namespace Figge
             savedBefore = true;
         }
 
-        private void addToList(string item, List<string> list)
+        private bool addToList(string item, List<string> list)
         {
             // check if the same item is in the list already
             if (list.Contains(item))
             {
-                return;
+                return false;
             }
             int length = list.Count;
             list.Insert(length, item);
+            Console.Write(item + "is added into list");
+            return true;
+        }
+
+        private bool removeFromList(string item, List<string> list)
+        {
+            // check if the same item is in the list already
+            if (!list.Contains(item))
+            {
+                return false;
+            }
+            list.Remove(item);
+            Console.Write(item + "is removed from list");
+            return true;
         }
 
         private void updateAllText(string item, Color clr, ColorUseFor use)
         {
+            // store the current selection for restoring
+            int length = richTextBoxInput.SelectedText.Length;
+            int start_pos_old = richTextBoxInput.SelectionStart;
+
             if (use == ColorUseFor.background)
             {
                 int start_pos = 0;
@@ -322,7 +394,36 @@ namespace Figge
                     start_pos = index + item.Length;
                 }
             }
-            richTextBoxInput.DeselectAll();
+
+            // restore the selection
+            richTextBoxInput.Select(start_pos_old, length);
+        }
+
+        private void addToListAndUpdateAllText(string text, List<string> list, Color clr, ColorUseFor usdFor)
+        {
+            if (addToList(text, list))
+            {
+                updateAllText(text, clr, usdFor);
+            }
+        }
+
+        private void removeFromListAndUpdateAllText(List<string> list, Color clr, ColorUseFor usdFor)
+        {
+            string selectedText = richTextBoxInput.SelectedText;
+            if (list.Count > 0)
+            {
+                List<string> listCopy = new List<string>(list.ToArray());
+                foreach (string item in listCopy)
+                {
+                    if (selectedText.Contains(item))
+                    {
+                        if (removeFromList(item, list))
+                        {
+                            updateAllText(item, clr, usdFor);
+                        }
+                    }
+                }
+            }
         }
 
     }
