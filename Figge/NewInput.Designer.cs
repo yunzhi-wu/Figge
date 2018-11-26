@@ -39,10 +39,10 @@
             // 
             this.richTextBoxInput.BackColor = System.Drawing.SystemColors.Window;
             this.richTextBoxInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxInput.Location = new System.Drawing.Point(16, 19);
-            this.richTextBoxInput.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.richTextBoxInput.Location = new System.Drawing.Point(21, 23);
+            this.richTextBoxInput.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.richTextBoxInput.Name = "richTextBoxInput";
-            this.richTextBoxInput.Size = new System.Drawing.Size(612, 426);
+            this.richTextBoxInput.Size = new System.Drawing.Size(1400, 800);
             this.richTextBoxInput.TabIndex = 0;
             this.richTextBoxInput.Text = "";
             this.richTextBoxInput.SelectionChanged += new System.EventHandler(this.richTextBoxInput_SelectionChanged);
@@ -51,10 +51,10 @@
             // 
             // buttonNewWords
             // 
-            this.buttonNewWords.Location = new System.Drawing.Point(646, 76);
-            this.buttonNewWords.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonNewWords.Location = new System.Drawing.Point(1429, 130);
+            this.buttonNewWords.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonNewWords.Name = "buttonNewWords";
-            this.buttonNewWords.Size = new System.Drawing.Size(78, 23);
+            this.buttonNewWords.Size = new System.Drawing.Size(104, 28);
             this.buttonNewWords.TabIndex = 1;
             this.buttonNewWords.Text = "标注生字";
             this.buttonNewWords.UseVisualStyleBackColor = true;
@@ -62,10 +62,10 @@
             // 
             // buttonNewPhrase
             // 
-            this.buttonNewPhrase.Location = new System.Drawing.Point(646, 153);
-            this.buttonNewPhrase.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonNewPhrase.Location = new System.Drawing.Point(1429, 224);
+            this.buttonNewPhrase.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonNewPhrase.Name = "buttonNewPhrase";
-            this.buttonNewPhrase.Size = new System.Drawing.Size(78, 23);
+            this.buttonNewPhrase.Size = new System.Drawing.Size(104, 28);
             this.buttonNewPhrase.TabIndex = 2;
             this.buttonNewPhrase.Text = "标注新词";
             this.buttonNewPhrase.UseVisualStyleBackColor = true;
@@ -73,10 +73,10 @@
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(646, 348);
-            this.buttonSave.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonSave.Location = new System.Drawing.Point(1429, 464);
+            this.buttonSave.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(78, 23);
+            this.buttonSave.Size = new System.Drawing.Size(104, 28);
             this.buttonSave.TabIndex = 3;
             this.buttonSave.Text = "Save";
             this.buttonSave.UseVisualStyleBackColor = true;
@@ -84,9 +84,10 @@
             // 
             // ClearMark
             // 
-            this.ClearMark.Location = new System.Drawing.Point(646, 230);
+            this.ClearMark.Location = new System.Drawing.Point(1429, 319);
+            this.ClearMark.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ClearMark.Name = "ClearMark";
-            this.ClearMark.Size = new System.Drawing.Size(78, 23);
+            this.ClearMark.Size = new System.Drawing.Size(104, 28);
             this.ClearMark.TabIndex = 4;
             this.ClearMark.Text = "清除标注";
             this.ClearMark.UseVisualStyleBackColor = true;
@@ -94,15 +95,15 @@
             // 
             // NewInput
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(736, 464);
+            this.ClientSize = new System.Drawing.Size(1582, 1055);
             this.Controls.Add(this.ClearMark);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.buttonNewPhrase);
             this.Controls.Add(this.buttonNewWords);
             this.Controls.Add(this.richTextBoxInput);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "NewInput";
             this.Text = "NewInput";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NewInput_FormClosing);
