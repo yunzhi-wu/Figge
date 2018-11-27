@@ -94,6 +94,7 @@ namespace Figge
         public void UpdateInfo()
         {
             m_records = File.ReadAllLines(m_path);
+            updateHistogram();
         }
 
         private void updateHistogram()
@@ -125,7 +126,7 @@ namespace Figge
                     aRecordStarted = false;
                 }
             }
-            Console.Write("how many words? " + m_histogram.Count + "\n");
+            UserStatus.Text = "你已经学了 " + m_histogram.Count + " 个汉字\n";
         }
     }
 }

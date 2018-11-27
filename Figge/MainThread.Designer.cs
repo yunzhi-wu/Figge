@@ -32,6 +32,7 @@
             this.Review = new System.Windows.Forms.Button();
             this.Test = new System.Windows.Forms.Button();
             this.Statistics = new System.Windows.Forms.Button();
+            this.UserStatus = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // AddNewThings
@@ -72,11 +73,21 @@
             this.Statistics.Text = "统计信息";
             this.Statistics.UseVisualStyleBackColor = true;
             // 
+            // UserStatus
+            // 
+            this.UserStatus.BackColor = System.Drawing.SystemColors.Control;
+            this.UserStatus.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.UserStatus.Location = new System.Drawing.Point(205, 41);
+            this.UserStatus.Name = "UserStatus";
+            this.UserStatus.Size = new System.Drawing.Size(300, 15);
+            this.UserStatus.TabIndex = 4;
+            // 
             // MainThread
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 571);
+            this.Controls.Add(this.UserStatus);
             this.Controls.Add(this.Statistics);
             this.Controls.Add(this.Test);
             this.Controls.Add(this.Review);
@@ -85,6 +96,7 @@
             this.Text = "MainThread";
             this.Load += new System.EventHandler(this.MainThread_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -94,5 +106,6 @@
         private System.Windows.Forms.Button Review;
         private System.Windows.Forms.Button Test;
         private System.Windows.Forms.Button Statistics;
+        private System.Windows.Forms.TextBox UserStatus;
     }
 }
