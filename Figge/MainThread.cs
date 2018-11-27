@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Figge
 {
@@ -15,6 +16,8 @@ namespace Figge
     {
         private string[] m_records;
         private string m_path = @"MyLearning.html";
+
+        private Dictionary<char, int> m_histogram;
 
         public MainThread()
         {
@@ -25,7 +28,7 @@ namespace Figge
                 StreamWriter sw = File.CreateText(m_path);
                 sw.Close();
             }
-            this.m_records = File.ReadAllLines(m_path);
+            m_records = File.ReadAllLines(m_path);
             
             if (m_records.Length == 0)
             {
@@ -63,6 +66,10 @@ namespace Figge
                     }
                 }
             }
+
+            m_histogram = new Dictionary<char, int>();
+            updateHistogram();
+
         }
 
         private void MainThread_Load(object sender, EventArgs e)
@@ -87,6 +94,38 @@ namespace Figge
         public void UpdateInfo()
         {
             m_records = File.ReadAllLines(m_path);
+        }
+
+        private void updateHistogram()
+        {
+            bool aRecordStarted = false;
+            foreach (string line in m_records)
+            {
+                // it can be multiple lines for each record
+                if (line.Contains("<td>") && !Regex.IsMatch(line, @"\d\d/\d\d/\d\d\d\d"))
+                {
+                    aRecordStarted = true;
+                }
+                if (aRecordStarted)
+                {
+                    foreach (char a in line)
+                    {
+                        if (m_histogram.ContainsKey(a))
+                        {
+                            m_histogram[a]++;
+                        }
+                        else
+                        {
+                            m_histogram.Add(a, 1);
+                        }
+                    }
+                }
+                if (line.Contains("</td>") && !Regex.IsMatch(line, @"\d\d/\d\d/\d\d\d\d"))
+                {
+                    aRecordStarted = false;
+                }
+            }
+            Console.Write("how many words? " + m_histogram.Count + "\n");
         }
     }
 }
