@@ -32,9 +32,12 @@ namespace Figge
             
             if (m_records.Length == 0)
             {
-                m_records = new string[17];
+                m_records = new string[21];
                 int i = 0;
+                m_records[i++] = "<!DOCTYPE html>";
+                m_records[i++] = "<html>";
                 m_records[i++] = "<head>";
+                m_records[i++] = "  <meta http-equiv='x-ua-compatible' content='IE=edge,chrome=1'>";
                 m_records[i++] = "  <meta charset=\"UTF-8\">";
                 m_records[i++] = "<style>";
                 m_records[i++] = "nw {";
@@ -45,20 +48,13 @@ namespace Figge
                 m_records[i++] = "}";
                 m_records[i++] = "</style>";
                 m_records[i++] = "</head>";
-                /*
-                <table style="width:100%">
-                  <tr>
-                    <th>Time Created</th>
-                    <th>Content</th> 
-                  </tr>
-                </table>
-                */
-                m_records[i++] = "<table style=\"width:100%\">";
+                m_records[i++] = "<table style=\"width:100%\" border=1 frame=void rules=rows>";
                 m_records[i++] = "  <tr>";
                 m_records[i++] = "    <th>Time Created</th>";
                 m_records[i++] = "    <th>Content</th>";
                 m_records[i++] = "  </tr>";
                 m_records[i++] = "</table>";
+                m_records[i++] = "</html>";
                 using (StreamWriter sw = new StreamWriter(m_path))
                 {
                     for (i = 0; i < m_records.Length; i++)

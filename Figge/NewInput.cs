@@ -329,9 +329,11 @@ namespace Figge
                 newRecord[2] = "    <td>" + content + "</td>";
                 newRecord[3] = "  </tr>";
 
+                // TODO: seek and insert, instead of overwriting the whole file
                 using (StreamWriter wr = new StreamWriter(m_path))
                 {
-                    for (int i = 0; i < length - 1; i++)
+                    const int nofHeadLines = 19;
+                    for (int i = 0; i < nofHeadLines; i++)
                     {
                         wr.WriteLine(m_records[i]);
                     }
@@ -339,7 +341,10 @@ namespace Figge
                     {
                         wr.WriteLine(newRecord[i]);
                     }
-                    wr.WriteLine(m_records[length - 1]);
+                    for (int i = nofHeadLines; i < length; i++)
+                    {
+                        wr.WriteLine(m_records[i]);
+                    }                    
                 }
             }
 
