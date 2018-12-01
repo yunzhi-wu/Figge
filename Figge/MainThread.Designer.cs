@@ -53,6 +53,7 @@
             this.Review.TabIndex = 1;
             this.Review.Text = "复习旧知识";
             this.Review.UseVisualStyleBackColor = true;
+            this.Review.Click += new System.EventHandler(this.Review_Click);
             // 
             // Test
             // 

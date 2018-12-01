@@ -32,9 +32,10 @@ namespace Figge
             
             if (m_records.Length == 0)
             {
-                m_records = new string[16];
+                m_records = new string[17];
                 int i = 0;
                 m_records[i++] = "<head>";
+                m_records[i++] = "  <meta charset=\"UTF-8\">";
                 m_records[i++] = "<style>";
                 m_records[i++] = "nw {";
                 m_records[i++] = "    background-color: Orange;";
@@ -127,6 +128,15 @@ namespace Figge
                 }
             }
             UserStatus.Text = "你已经学了 " + m_histogram.Count + " 个汉字\n";
+        }
+
+        private void Review_Click(object sender, EventArgs e)
+        {
+            // display_data dis_form = new display_data();
+            DisplayExist next_form = new DisplayExist(m_path);
+            next_form.callerForm = this;
+            this.Hide();
+            next_form.ShowDialog();
         }
     }
 }

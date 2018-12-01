@@ -67,6 +67,12 @@
     <Compile Include="display_data.Designer.cs">
       <DependentUpon>display_data.cs</DependentUpon>
     </Compile>
+    <Compile Include="DisplayExist.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayExist.Designer.cs">
+      <DependentUpon>DisplayExist.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainThread.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +97,9 @@
     </Compile>
     <EmbeddedResource Include="display_data.resx">
       <DependentUpon>display_data.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DisplayExist.resx">
+      <DependentUpon>DisplayExist.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainThread.resx">
       <DependentUpon>MainThread.cs</DependentUpon>
