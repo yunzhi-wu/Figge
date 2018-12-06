@@ -58,7 +58,7 @@
             this.buttonNewWords.TabIndex = 1;
             this.buttonNewWords.Text = "标注生字";
             this.buttonNewWords.UseVisualStyleBackColor = true;
-            this.buttonNewWords.Click += new System.EventHandler(this.button1_Click);
+            this.buttonNewWords.Click += new System.EventHandler(this.buttonNewWords_Click);
             // 
             // buttonNewPhrase
             // 

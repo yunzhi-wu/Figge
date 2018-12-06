@@ -70,7 +70,7 @@ namespace Figge
             savedBefore = true;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonNewWords_Click(object sender, EventArgs e)
         {
             // Reset background of buttonNewPhrase
             buttonNewPhaseBackColor = DefaultBackColor;
