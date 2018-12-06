@@ -82,6 +82,8 @@ namespace Figge
             // toggle between default and Orange
             if (buttonNewWordBackColor == DefaultBackColor)
             {
+                buttonNewWordBackColor = Color.Orange;
+
                 if (richTextBoxInput.SelectedText.Length > 0 &&
                     richTextBoxInput.SelectedText.Length < 50)
                 {
@@ -93,11 +95,7 @@ namespace Figge
                             return;
                         }
                     }
-
-                    buttonNewWordBackColor = Color.Orange;
-
                     addToListAndUpdateAllText(richTextBoxInput.SelectedText, m_words_l, buttonNewWordBackColor, ColorUseFor.background);
-
                 }
             }
             else
@@ -119,6 +117,7 @@ namespace Figge
             // toggle between default and DodgerBlue
             if (buttonNewPhaseBackColor == DefaultBackColor)
             {
+                buttonNewPhaseBackColor = Color.DodgerBlue;
                 if (richTextBoxInput.SelectedText.Length > 1 &&
                     richTextBoxInput.SelectedText.Length < 50)
                 {
@@ -131,8 +130,6 @@ namespace Figge
                             m_words_l.Remove(item);
                         }
                     }
-                    buttonNewPhaseBackColor = Color.DodgerBlue;
-
                     addToListAndUpdateAllText(richTextBoxInput.SelectedText, m_phrase_l, buttonNewPhaseBackColor, ColorUseFor.background);
                 }
             }
