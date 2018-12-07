@@ -18,6 +18,7 @@ namespace Figge
         private string m_path = @"MyLearning.html";
 
         private Dictionary<char, int> m_histogram;
+        private Dictionary<string, int> m_histogram_eng;
 
         public MainThread()
         {
@@ -65,6 +66,7 @@ namespace Figge
             }
 
             m_histogram = new Dictionary<char, int>();
+            m_histogram_eng = new Dictionary<string, int>();
             updateHistogram();
 
         }
@@ -96,6 +98,7 @@ namespace Figge
 
         private void updateHistogram()
         {
+            bool isEnglishLikeText = true;
             bool aRecordStarted = false;
             foreach (string line in m_records)
             {
@@ -106,24 +109,55 @@ namespace Figge
                 }
                 if (aRecordStarted)
                 {
-                    foreach (char a in line)
+                    if (!isEnglishLikeText)
                     {
-                        if (m_histogram.ContainsKey(a))
+                        foreach (char a in line)
                         {
-                            m_histogram[a]++;
-                        }
-                        else
-                        {
-                            m_histogram.Add(a, 1);
+                            if (m_histogram.ContainsKey(a))
+                            {
+                                m_histogram[a]++;
+                            }
+                            else
+                            {
+                                m_histogram.Add(a, 1);
+                            }
                         }
                     }
+                    else
+                    {
+                        string tmp = Regex.Replace(line, @"\.|,", " ");
+                        string tmp2 = Regex.Replace(tmp, @"(\<np\>)|(\</np\>)|(\<nw\>)|(\</nw\>)|(\<td\>)|(\</td\>)", "");
+                        string tmp3 = tmp2.ToLower();
+                        string[] words = tmp3.Split();
+                        foreach (string word in words)
+                        {
+                            if (m_histogram_eng.ContainsKey(word))
+                            {
+                                m_histogram_eng[word]++;
+                            }
+                            else
+                            {
+                                m_histogram_eng.Add(word, 1);
+                            }
+                        }
+
+                    }
+
                 }
                 if (line.Contains("</td>") && !Regex.IsMatch(line, @"\d\d/\d\d/\d\d\d\d"))
                 {
                     aRecordStarted = false;
                 }
             }
-            UserStatus.Text = "你已经学了 " + m_histogram.Count + " 个汉字\n";
+            if (!isEnglishLikeText)
+            {
+                UserStatus.Text = "你已经学了 " + m_histogram.Count + " 个汉字\n";
+            }
+            else
+            {
+                UserStatus.Text = "You have recorded " + m_histogram_eng.Count + " words\n";
+            }
+            
         }
 
         private void Review_Click(object sender, EventArgs e)

@@ -207,6 +207,13 @@ namespace Figge
         private void richTextBoxInput_MouseUp(object sender, MouseEventArgs e)
         {
             int length = richTextBoxInput.SelectedText.Length;
+            if (length > 0)
+            {
+                if (isSeparator(richTextBoxInput.SelectedText[length - 1]))
+                {
+                    richTextBoxInput.SelectionLength = -- length;
+                }
+            }
             if (length == 0)
             {
                 return;
@@ -299,15 +306,59 @@ namespace Figge
 
                 string content = string.Copy(richTextBoxInput.Text);
                 string temp = null;
-                
+
+                bool isEnglishLikeText = true;
+
                 if (m_words_l.Count > 0)
                 {
                     debug_displayList(m_words_l);
                     foreach (string item in m_words_l)
                     {
                         string newitem = "<nw>" + item + "</nw>";
-                        temp = string.Copy(content);
-                        content = temp.Replace(item, newitem);
+                        if (!isEnglishLikeText)
+                        {
+                            // chinese
+                            temp = string.Copy(content);
+                            content = temp.Replace(item, newitem);
+                        }
+                        else
+                        {
+                            // English like text, words separated by space
+                            temp = string.Copy(content);
+                            content = "";
+
+                            int start_pos = 0;
+                            int lastCopy = start_pos;
+
+                            while (start_pos < temp.Length)
+                            {
+                                int index = temp.IndexOf(item, start_pos);
+                                if (index == -1)
+                                {
+                                    // no new found, copy all the rest
+                                    content += temp.Substring(lastCopy, temp.Length - lastCopy);
+                                    break;
+                                }
+                                if (index != 0 && !isSeparator(richTextBoxInput.Text[index - 1]))
+                                {
+                                    // the char before is not a separator
+                                    start_pos = index + item.Length;
+                                    continue;
+                                }
+                                if ((index + item.Length != richTextBoxInput.Text.Length) &&
+                                    !isSeparator(richTextBoxInput.Text[index + item.Length]))
+                                {
+                                    // the char after is not a separator
+                                    start_pos = index + item.Length;
+                                    continue;
+                                }
+                                // there is a whole word match
+                                content += temp.Substring(lastCopy, index - lastCopy);
+                                content += newitem;
+                                start_pos = index + item.Length;
+                                lastCopy = start_pos;
+                            }
+                        }
                     }
                 }
                 if (m_phrase_l.Count > 0)
@@ -316,8 +367,49 @@ namespace Figge
                     foreach (string item in m_phrase_l)
                     {
                         string newitem = "<np>" + item + "</np>";
-                        temp = string.Copy(content);
-                        content = temp.Replace(item, newitem);
+                        if (!isEnglishLikeText)
+                        {
+                            temp = string.Copy(content);
+                            content = temp.Replace(item, newitem);
+                        }
+                        else
+                        {
+                            // English like text, words separated by space
+                            temp = string.Copy(content);
+                            content = "";
+
+                            int start_pos = 0;
+                            int lastCopy = start_pos;
+
+                            while (start_pos < temp.Length)
+                            {
+                                int index = temp.IndexOf(item, start_pos);
+                                if (index == -1)
+                                {
+                                    // no new found, copy all the rest
+                                    content += temp.Substring(lastCopy, temp.Length - lastCopy);
+                                    break;
+                                }
+                                if (index != 0 && !isSeparator(richTextBoxInput.Text[index - 1]))
+                                {
+                                    // the char before is not a separator
+                                    start_pos = index + item.Length;
+                                    continue;
+                                }
+                                if ((index + item.Length != richTextBoxInput.Text.Length) &&
+                                    !isSeparator(richTextBoxInput.Text[index + item.Length]))
+                                {
+                                    // the char after is not a separator
+                                    start_pos = index + item.Length;
+                                    continue;
+                                }
+                                // there is a whole word match
+                                content += temp.Substring(lastCopy, index - lastCopy);
+                                content += newitem;
+                                start_pos = index + item.Length;
+                                lastCopy = start_pos;
+                            }
+                        }
                     }
                 }
 
@@ -390,6 +482,27 @@ namespace Figge
                     {
                         break;
                     }
+
+                    // For English like text, word is usaully separated by space, comma, etc,
+                    // so need match "whole" word
+                    bool isEnglishLikeText = true;
+                    if (isEnglishLikeText)
+                    {
+                        if (index != 0 && !isSeparator(richTextBoxInput.Text[index -1]))
+                        {
+                            // the char before is not a separator
+                            start_pos = index + item.Length;
+                            continue;
+                        }
+                        if ((index + item.Length != richTextBoxInput.Text.Length) && 
+                            !isSeparator(richTextBoxInput.Text[index + item.Length]))
+                        {
+                            // the char after is not a separator
+                            start_pos = index + item.Length;
+                            continue;
+                        }
+                    }
+
                     richTextBoxInput.Select(index, item.Length);
                     richTextBoxInput.SelectionBackColor = clr;
 
@@ -426,6 +539,16 @@ namespace Figge
                     }
                 }
             }
+        }
+
+        private bool isSeparator(char c)
+        {
+            char[] separators = { ' ', ',', '.' };
+            if (separators.Contains(c))
+            {
+                return true;
+            }
+            return false;
         }
 
     }
