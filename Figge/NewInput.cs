@@ -36,7 +36,7 @@ namespace Figge
         private string m_path;
 
         private string[] m_records;
- 
+
         public NewInput(string path, string[] records)
         {
             InitializeComponent();
@@ -92,6 +92,11 @@ namespace Figge
                     {
                         if (item.Contains(richTextBoxInput.SelectedText))
                         {
+                            // popup a warning dialogue box for information
+                            DialogResult ret = MessageBox.Show(null,
+                                                               "This string has been marked as new phrase, can't be marked as new words as well. Need clear the mark before remark it",
+                                                               "Info",
+                                                               MessageBoxButtons.OK);
                             return;
                         }
                     }
@@ -235,6 +240,12 @@ namespace Figge
                 {
                     if (item.Contains(richTextBoxInput.SelectedText))
                     {
+                        // popup a warning dialogue box for information
+                        DialogResult ret = MessageBox.Show(null,
+                                                           "This string has been marked as new phrase, can't be marked as new words as well. Need clear the mark before remark it",
+                                                           "Info",
+                                                           MessageBoxButtons.OK);
+
                         return;
                     }
                 }
@@ -257,6 +268,7 @@ namespace Figge
                     if (richTextBoxInput.SelectedText.Contains(item))
                     {
                         m_words_l.Remove(item);
+                        Console.Write("\"" + item + "\" is removed from list, nofItem left " + m_words_l.Count + '\n');
                     }
                 }
 
@@ -304,118 +316,27 @@ namespace Figge
                  </tr>
                  */
 
-                string content = string.Copy(richTextBoxInput.Text);
-                string temp = null;
+                string content;
 
                 bool isEnglishLikeText = true;
 
-                if (m_words_l.Count > 0)
-                {
-                    debug_displayList(m_words_l);
-                    foreach (string item in m_words_l)
-                    {
-                        string newitem = "<nw>" + item + "</nw>";
-                        if (!isEnglishLikeText)
-                        {
-                            // chinese
-                            temp = string.Copy(content);
-                            content = temp.Replace(item, newitem);
-                        }
-                        else
-                        {
-                            // English like text, words separated by space
-                            temp = string.Copy(content);
-                            content = "";
+                content = addHtmlPattern(richTextBoxInput.Text,
+                    m_words_l,
+                    "<nw>",
+                    "</nw>",
+                    isEnglishLikeText);
 
-                            int start_pos = 0;
-                            int lastCopy = start_pos;
+                content = addHtmlPattern(content,
+                    m_phrase_l,
+                    "<np>",
+                    "</np>",
+                    isEnglishLikeText);
 
-                            while (start_pos < temp.Length)
-                            {
-                                int index = temp.IndexOf(item, start_pos);
-                                if (index == -1)
-                                {
-                                    // no new found, copy all the rest
-                                    content += temp.Substring(lastCopy, temp.Length - lastCopy);
-                                    break;
-                                }
-                                if (index != 0 && !isSeparator(richTextBoxInput.Text[index - 1]))
-                                {
-                                    // the char before is not a separator
-                                    start_pos = index + item.Length;
-                                    continue;
-                                }
-                                if ((index + item.Length != richTextBoxInput.Text.Length) &&
-                                    !isSeparator(richTextBoxInput.Text[index + item.Length]))
-                                {
-                                    // the char after is not a separator
-                                    start_pos = index + item.Length;
-                                    continue;
-                                }
-                                // there is a whole word match
-                                content += temp.Substring(lastCopy, index - lastCopy);
-                                content += newitem;
-                                start_pos = index + item.Length;
-                                lastCopy = start_pos;
-                            }
-                        }
-                    }
-                }
-                if (m_phrase_l.Count > 0)
-                {
-                    debug_displayList(m_phrase_l);
-                    foreach (string item in m_phrase_l)
-                    {
-                        string newitem = "<np>" + item + "</np>";
-                        if (!isEnglishLikeText)
-                        {
-                            temp = string.Copy(content);
-                            content = temp.Replace(item, newitem);
-                        }
-                        else
-                        {
-                            // English like text, words separated by space
-                            temp = string.Copy(content);
-                            content = "";
-
-                            int start_pos = 0;
-                            int lastCopy = start_pos;
-
-                            while (start_pos < temp.Length)
-                            {
-                                int index = temp.IndexOf(item, start_pos);
-                                if (index == -1)
-                                {
-                                    // no new found, copy all the rest
-                                    content += temp.Substring(lastCopy, temp.Length - lastCopy);
-                                    break;
-                                }
-                                if (index != 0 && !isSeparator(richTextBoxInput.Text[index - 1]))
-                                {
-                                    // the char before is not a separator
-                                    start_pos = index + item.Length;
-                                    continue;
-                                }
-                                if ((index + item.Length != richTextBoxInput.Text.Length) &&
-                                    !isSeparator(richTextBoxInput.Text[index + item.Length]))
-                                {
-                                    // the char after is not a separator
-                                    start_pos = index + item.Length;
-                                    continue;
-                                }
-                                // there is a whole word match
-                                content += temp.Substring(lastCopy, index - lastCopy);
-                                content += newitem;
-                                start_pos = index + item.Length;
-                                lastCopy = start_pos;
-                            }
-                        }
-                    }
-                }
+                string temp = content.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "<br>\r\n");
 
                 newRecord[0] = "  <tr>";
                 newRecord[1] = "    <td>" + createdTime + "</td>";
-                newRecord[2] = "    <td>" + content + "</td>";
+                newRecord[2] = "    <td>" + temp + "</td>";
                 newRecord[3] = "  </tr>";
 
                 // TODO: seek and insert, instead of overwriting the whole file
@@ -441,6 +362,74 @@ namespace Figge
             savedBefore = true;
         }
 
+        private string addHtmlPattern(string orig,
+            List<string> list,
+            string prefix,
+            string suffix,
+            bool isEnglishLikeText)
+        {
+            if (list.Count < 0)
+            {
+                return "";
+            }
+
+            debug_displayList(list);
+
+            string result = String.Copy(orig);
+
+            foreach (string item in list)
+            {
+                string newitem = prefix + item + suffix;
+
+                string temp = string.Copy(result);
+                result = "";
+
+                if (!isEnglishLikeText)
+                {
+                    // chinese
+                    result = temp.Replace(item, newitem);
+                }
+                else
+                {
+                    // English like text, words separated by space
+
+                    int start_pos = 0;
+                    int lastCopy = start_pos;
+
+                    while (start_pos < temp.Length)
+                    {
+                        int index = temp.IndexOf(item, start_pos);
+                        if (index == -1)
+                        {
+                            // no new found, copy all the rest
+                            result += temp.Substring(lastCopy, temp.Length - lastCopy);
+                            break;
+                        }
+                        if (index != 0 && !isSeparator(temp[index - 1]))
+                        {
+                            // the char before is not a separator
+                            start_pos = index + item.Length;
+                            continue;
+                        }
+                        if ((index + item.Length != temp.Length) &&
+                            !isSeparator(temp[index + item.Length]))
+                        {
+                            // the char after is not a separator
+                            start_pos = index + item.Length;
+                            continue;
+                        }
+                        // there is a whole word match
+                        result += temp.Substring(lastCopy, index - lastCopy);
+                        result += newitem;
+                        Console.Write("addHtmlPattern() replaced \"" + item + "\" at index " + index + "\n");
+                        start_pos = index + item.Length;
+                        lastCopy = start_pos;
+                    }
+                }
+            }
+            return result;
+        }
+
         private bool addToList(string item, List<string> list)
         {
             // check if the same item is in the list already
@@ -450,7 +439,7 @@ namespace Figge
             }
             int length = list.Count;
             list.Insert(length, item);
-            Console.Write(item + "is added into list");
+            Console.Write("\"" + item + "\" is added into list, nofItems " + list.Count + "\n");
             return true;
         }
 
@@ -462,7 +451,7 @@ namespace Figge
                 return false;
             }
             list.Remove(item);
-            Console.Write(item + "is removed from list");
+            Console.Write("\"" + item + "\" is removed from list, nofItems " + list.Count + "\n");
             return true;
         }
 
@@ -505,6 +494,8 @@ namespace Figge
 
                     richTextBoxInput.Select(index, item.Length);
                     richTextBoxInput.SelectionBackColor = clr;
+
+                    Console.Write("\"" + item + "\" is found at " + index + " and is marked / unmarked also\n");
 
                     start_pos = index + item.Length;
                 }
