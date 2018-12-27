@@ -33,7 +33,9 @@
             // 
             // webDisplay
             // 
-            this.webDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.webDisplay.Location = new System.Drawing.Point(0, 0);
             this.webDisplay.MinimumSize = new System.Drawing.Size(20, 20);
             this.webDisplay.Name = "webDisplay";
@@ -48,7 +50,9 @@
             this.ClientSize = new System.Drawing.Size(1441, 633);
             this.Controls.Add(this.webDisplay);
             this.Name = "DisplayExist";
-            this.Text = "Display Existing";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Display Existing Records";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DisplayExist_FormClosing);
             this.ResumeLayout(false);
 

@@ -79,6 +79,12 @@
     <Compile Include="MainThread.Designer.cs">
       <DependentUpon>MainThread.cs</DependentUpon>
     </Compile>
+    <Compile Include="MemoryCard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MemoryCard.Designer.cs">
+      <DependentUpon>MemoryCard.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewInput.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +109,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainThread.resx">
       <DependentUpon>MainThread.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MemoryCard.resx">
+      <DependentUpon>MemoryCard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewInput.resx">
       <DependentUpon>NewInput.cs</DependentUpon>

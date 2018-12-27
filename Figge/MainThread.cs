@@ -23,6 +23,8 @@ namespace Figge
         private Dictionary<char, int> m_histogram;
         private Dictionary<string, int> m_histogram_eng;
 
+        private bool m_isEnglishLike = true;
+
         public MainThread()
         {
             InitializeComponent();
@@ -393,6 +395,17 @@ namespace Figge
                     }
                 }
             }
+        }
+
+        private void MemorizeCard_Click(object sender, EventArgs e)
+        {
+            // display_data dis_form = new display_data();
+            MemoryCard next_form = new MemoryCard(m_pathNewWord,
+                m_recordsAllText,
+                m_isEnglishLike);
+            next_form.callerForm = this;
+            this.Hide();
+            next_form.ShowDialog();
         }
     }
 }
