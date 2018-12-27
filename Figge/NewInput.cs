@@ -340,7 +340,7 @@ namespace Figge
                 newRecord[3] = "  </tr>";
 
                 // TODO: seek and insert, instead of overwriting the whole file
-                using (StreamWriter wr = new StreamWriter(m_path))
+                using (StreamWriter wr = new StreamWriter(m_path, false, Encoding.GetEncoding("utf-8")))
                 {
                     const int nofHeadLines = 19;
                     for (int i = 0; i < nofHeadLines; i++)
@@ -534,7 +534,7 @@ namespace Figge
 
         private bool isSeparator(char c)
         {
-            char[] separators = { ' ', ',', '.' };
+            char[] separators = { ' ', ',', '.', '(', ')' };
             if (separators.Contains(c))
             {
                 return true;
