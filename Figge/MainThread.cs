@@ -80,7 +80,7 @@ namespace Figge
 
             if (m_newWords.Length == 0)
             {
-                m_newWords = new string[23];
+                m_newWords = new string[24];
                 int i = 0;
                 m_newWords[i++] = "<!DOCTYPE html>";
                 m_newWords[i++] = "<html>";
@@ -99,6 +99,7 @@ namespace Figge
                 m_newWords[i++] = "<!-- 01/01/1900 00:00:00 -->";
                 m_newWords[i++] = "<table style=\"width:100%\" border=1 frame=void rules=rows>";
                 m_newWords[i++] = "  <tr>";
+                m_newWords[i++] = "    <th>Date</th>";
                 m_newWords[i++] = "    <th>New Words</th>";
                 m_newWords[i++] = "    <th>Times Added</th>";
                 m_newWords[i++] = "    <th>Familiarity (1-5)</th>";
@@ -251,7 +252,7 @@ namespace Figge
             bool isEnglishLikeText = true;
             bool aRecordStarted = false;
             int rowNr = 1;
-            DateTime dataTime;
+            DateTime dataTime = DateTime.MinValue;
             DateTime lastestDateTime = lastUpdateTime;
             List<string> newWord_l = new List<string>();
 
@@ -328,7 +329,7 @@ namespace Figge
                     // todo: use hash table to make the search quicker
                     foreach (string newWord in newWord_l)
                     {
-                        int lineIndex = 23;
+                        int lineIndex = 24;
                         for (; lineIndex < m_newWords.Length; lineIndex++)
                         {
                             string lineInNewWord = m_newWords[lineIndex];
@@ -353,14 +354,15 @@ namespace Figge
                         }
                         if (lineIndex == m_newWords.Length)
                         {
-                            int newLength = m_newWords.Length + 5;
+                            int newLength = m_newWords.Length + 6;
                             string[] tmp = new string[newLength];
                             m_newWords.CopyTo(tmp, 0);
 
-                            tmp[newLength - 2] = tmp[newLength - 7];
-                            tmp[newLength - 1] = tmp[newLength - 6];
+                            tmp[newLength - 2] = tmp[newLength - 8];
+                            tmp[newLength - 1] = tmp[newLength - 7];
 
-                            tmp[newLength - 7] = "  <tr>";
+                            tmp[newLength - 8] = "  <tr>";
+                            tmp[newLength - 7] = "    <td>" + dataTime.Date.ToShortDateString() + "</td>";
                             tmp[newLength - 6] = "    <td>" + newWord + "</td>";
                             tmp[newLength - 5] = "    <td>1</td>";
                             tmp[newLength - 4] = "    <td>1</td>";
