@@ -534,7 +534,7 @@ namespace Figge
 
         private bool isSeparator(char c)
         {
-            char[] separators = { ' ', ',', '.', '(', ')' };
+            char[] separators = { ' ', ',', '.', '(', ')', '\n' };
             if (separators.Contains(c))
             {
                 return true;
