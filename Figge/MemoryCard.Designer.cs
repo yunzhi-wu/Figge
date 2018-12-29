@@ -59,10 +59,10 @@
             this.newWordRichText.BackColor = System.Drawing.SystemColors.Control;
             this.newWordRichText.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.newWordRichText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.newWordRichText.Location = new System.Drawing.Point(0, 122);
+            this.newWordRichText.Location = new System.Drawing.Point(0, 131);
             this.newWordRichText.Name = "newWordRichText";
             this.newWordRichText.ReadOnly = true;
-            this.newWordRichText.Size = new System.Drawing.Size(800, 174);
+            this.newWordRichText.Size = new System.Drawing.Size(800, 168);
             this.newWordRichText.TabIndex = 1;
             this.newWordRichText.TabStop = false;
             this.newWordRichText.Text = "nytt ord är fint";
@@ -79,6 +79,7 @@
             this.buttonYes.TabIndex = 2;
             this.buttonYes.Text = "认识";
             this.buttonYes.UseVisualStyleBackColor = true;
+            this.buttonYes.Click += new System.EventHandler(this.buttonYes_Click);
             // 
             // buttonNo
             // 
@@ -102,6 +103,7 @@
             this.buttonVeryWell.TabIndex = 4;
             this.buttonVeryWell.Text = "非常熟悉";
             this.buttonVeryWell.UseVisualStyleBackColor = true;
+            this.buttonVeryWell.Click += new System.EventHandler(this.buttonVeryWell_Click);
             // 
             // MemoryCard
             // 

@@ -102,9 +102,9 @@ namespace Figge
                 m_newWords[i++] = "<table style=\"width:100%\" border=1 frame=void rules=rows>";
                 m_newWords[i++] = "  <tr>";
                 m_newWords[i++] = "    <th>Date</th>";
-                m_newWords[i++] = "    <th>New Words</th>";
-                m_newWords[i++] = "    <th>Times Added</th>";
-                m_newWords[i++] = "    <th>Familiarity (1-5)</th>";
+                m_newWords[i++] = "    <th>NewWords</th>";
+                m_newWords[i++] = "    <th>TimesAdded</th>";
+                m_newWords[i++] = "    <th>Familiarity</th>";
                 m_newWords[i++] = "  </tr>";
                 m_newWords[i++] = "</table>";
                 m_newWords[i++] = "</html>";
