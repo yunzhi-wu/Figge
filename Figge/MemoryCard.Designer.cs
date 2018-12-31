@@ -33,6 +33,7 @@
             this.buttonYes = new System.Windows.Forms.Button();
             this.buttonNo = new System.Windows.Forms.Button();
             this.buttonVeryWell = new System.Windows.Forms.Button();
+            this.progressBarFamiliarity = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // newWordText
@@ -92,6 +93,7 @@
             this.buttonNo.TabIndex = 3;
             this.buttonNo.Text = "不认识";
             this.buttonNo.UseVisualStyleBackColor = true;
+            this.buttonNo.Click += new System.EventHandler(this.buttonNo_Click);
             // 
             // buttonVeryWell
             // 
@@ -105,11 +107,19 @@
             this.buttonVeryWell.UseVisualStyleBackColor = true;
             this.buttonVeryWell.Click += new System.EventHandler(this.buttonVeryWell_Click);
             // 
+            // progressBarFamiliarity
+            // 
+            this.progressBarFamiliarity.Location = new System.Drawing.Point(21, 330);
+            this.progressBarFamiliarity.Name = "progressBarFamiliarity";
+            this.progressBarFamiliarity.Size = new System.Drawing.Size(756, 23);
+            this.progressBarFamiliarity.TabIndex = 5;
+            // 
             // MemoryCard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.progressBarFamiliarity);
             this.Controls.Add(this.buttonVeryWell);
             this.Controls.Add(this.buttonNo);
             this.Controls.Add(this.buttonYes);
@@ -132,5 +142,6 @@
         private System.Windows.Forms.Button buttonYes;
         private System.Windows.Forms.Button buttonNo;
         private System.Windows.Forms.Button buttonVeryWell;
+        private System.Windows.Forms.ProgressBar progressBarFamiliarity;
     }
 }

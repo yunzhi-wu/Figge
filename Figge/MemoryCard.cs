@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using HtmlAgilityPack;
+using System.Text.RegularExpressions;
 
 namespace Figge
 {
@@ -26,6 +27,7 @@ namespace Figge
         private DataTable m_newWordsSorted;
 
         private Int32 m_newWordIndex;
+        private Int32 m_newWordGroup = 1;
 
         public MemoryCard(string pathNewWord,
             string[] records,
@@ -50,6 +52,18 @@ namespace Figge
                 m_newWords.Columns.Add(header.InnerText); // create columns from th
                                                      // select rows with td elements 
             }
+
+            getWeightTable();
+
+            m_newWordIndex = 0;
+            displayNewWord();
+        }
+
+        private void getWeightTable()
+        {
+            m_newWords.Clear();
+            m_newWordsSorted.Clear();
+
             foreach (var row in m_doc.DocumentNode.SelectNodes("//tr[td]"))
             {
                 m_newWords.Rows.Add(row.SelectNodes("td").Select(td => td.InnerText).ToArray());
@@ -85,7 +99,7 @@ namespace Figge
                 Int16 nrOfDays = (Int16)Math.Round((today - Convert.ToDateTime(row["Date"])).TotalDays, 0, MidpointRounding.AwayFromZero);
                 row["weight"] = nrOfDays / 3 + 2 * (Convert.ToInt16(row["timesAdded"]) - 1) + (10 - Convert.ToInt16(row["Familiarity"]));
 
-                Console.WriteLine("{0}\t\t: days {1}\t, timesAdded {2}, Familiarity {3}: weight {4}", 
+                Console.WriteLine("{0}\t\t: days {1}\t, timesAdded {2}, Familiarity {3}: weight {4}",
                     row["NewWords"],
                     nrOfDays,
                     row["timesAdded"],
@@ -98,26 +112,116 @@ namespace Figge
             DataView dv = filteredDataTable.DefaultView;
             dv.Sort = "weight desc";
             m_newWordsSorted = dv.ToTable();
-
-            m_newWordIndex = 0;
-            newWordText.Text = m_newWordsSorted.Rows[m_newWordIndex].Field<string>("NewWords");
         }
 
         private void MemoryCard_FormClosed(object sender, FormClosedEventArgs e)
         {
+            // save the updated xml back to file
+            m_doc.Save(m_pathNewWords, Encoding.GetEncoding("utf-8"));
             callerForm.Show();
         }
 
         private void buttonYes_Click(object sender, EventArgs e)
         {
-            string xPath = "//tr[td=\"" + newWordText.Text + "\"]";
-            HtmlNodeCollection tmp = m_doc.DocumentNode.SelectNodes(xPath);
-            // tmp[0].InnerHtml = "\r\n    <td>19/12/2018</td>\r\n    <td>öka</td>\r\n    <td>1</td>\r\n    <td>3</td>\r\n  ";
+            updateFamiliarity(newWordText.Text, 1);
+            m_newWordIndex++;
+            displayNewWord();
         }
 
         private void buttonVeryWell_Click(object sender, EventArgs e)
         {
+            updateFamiliarity(newWordText.Text, 3);
+            m_newWordIndex++;
+            displayNewWord();
+        }
 
+        private void buttonNo_Click(object sender, EventArgs e)
+        {
+            updateFamiliarity(newWordText.Text, -1);
+            m_newWordIndex++;
+            displayNewWord();
+        }
+
+        private void updateFamiliarity(string newWord, int delta)
+        {
+            string xPath = "//tr[td=\"" + newWord + "\"]";
+            HtmlNodeCollection tmp = m_doc.DocumentNode.SelectNodes(xPath);
+
+            Match match = Regex.Match(tmp[0].InnerHtml, @"\d+", RegexOptions.RightToLeft);
+
+            if (!match.Success)
+            {
+                Console.WriteLine("updateFamiliarity(): No match found. Check it");
+                return;
+            }
+
+            int newFamiliarity = Convert.ToInt16(match.Value) + delta;
+
+            if (newFamiliarity < 1)
+            {
+                newFamiliarity = 1;
+            }
+
+            tmp[0].InnerHtml = ReplaceLastOccurrence(tmp[0].InnerHtml, match.Value, newFamiliarity.ToString());
+        }
+
+        private string ReplaceLastOccurrence(string Source, string Find, string Replace)
+        {
+            int place = Source.LastIndexOf(Find);
+
+            if (place == -1)
+                return Source;
+
+            string result = Source.Remove(place, Find.Length).Insert(place, Replace);
+            return result;
+        }
+
+        private void displayNewWord()
+        {
+            bool isFinished = false;
+            int finishReason = 0;
+            string finishReasonStr = "你已经完成";
+            if (m_newWordIndex >= m_newWordsSorted.Rows.Count)
+            {
+                isFinished = true;
+                finishReason = 1;
+                finishReasonStr += "全部新字。\n";
+            }
+            else if (m_newWordIndex >= 12 * m_newWordGroup)
+            {
+                isFinished = true;
+                finishReason = 2;
+                finishReasonStr += "一组十二个新字。\n";
+            }
+            if (isFinished)
+            {
+                finishReasonStr += "还要再练习吗？";
+                DialogResult result = MessageBox.Show(null,
+                                                     finishReasonStr,
+                                                     "Info",
+                                                     MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    if (finishReason == 1)
+                    {
+                        getWeightTable();
+                        m_newWordIndex = 0;
+                        m_newWordGroup = 1;
+                    }
+                    else if (finishReason == 2)
+                    {
+                        m_newWordGroup++;
+                    }
+                    finishReason = 0;
+                }
+                else
+                {
+                    this.Close();
+                }
+            }
+
+            newWordText.Text = m_newWordsSorted.Rows[m_newWordIndex].Field<string>("NewWords");
+            progressBarFamiliarity.Value = Convert.ToInt32(m_newWordsSorted.Rows[m_newWordIndex].Field<string>("Familiarity"));
         }
     }
 }
