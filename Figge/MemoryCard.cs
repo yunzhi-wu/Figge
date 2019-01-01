@@ -226,6 +226,112 @@ namespace Figge
 
             newWordText.Text = m_newWordsSorted.Rows[m_newWordIndex].Field<string>("NewWords");
             progressBarFamiliarity.Value = Convert.ToInt32(m_newWordsSorted.Rows[m_newWordIndex].Field<string>("Familiarity"));
+
+            checkBoxContext.Checked = false;
+            webBrowserContext.Visible = false;
+
+            string cntxt = "<!DOCTYPE html>" +
+                          "<html>" +
+                          "<head>" +
+                          "  <meta http-equiv='x-ua-compatible' content='IE=edge,chrome=1'>" +
+                          "  <meta charset=\"UTF-8\">" +
+                          "<style>" +
+                          "nw {" +
+                          "    background-color: Orange;" +
+                          "}" +
+                          "np {" +
+                          "    background-color: DodgerBlue; " +
+                          "}" +
+                          "</style>" +
+                          "</head>";  // remember to add  "</html>";
+
+            string wordWithNw = "<nw>" + newWordText.Text + "</nw>";
+            string wordWithNp = "<np>" + newWordText.Text + "</np>";
+
+            int foundCount = 0;
+            foreach (string line in m_records)
+            {
+                int startIndex;
+
+                startIndex = line.IndexOf(wordWithNw);
+                if (startIndex < 0)
+                {
+                    startIndex = line.IndexOf(wordWithNp);
+                }
+                if (startIndex < 0)
+                {
+                    continue;
+                }
+                MatchCollection matches;
+                if (m_isEnglishLike)
+                {
+                    matches = Regex.Matches(line, @"^|\.|$|：|:|?|!|('”')|('“')|(“)|(”)");
+                }
+                else
+                {
+                    matches = Regex.Matches(line, @"^|\.|。|$|：|:|？|！|('”')|('“')|(“)|(”)");
+                }
+                if (matches.Count < 2)
+                {
+                    Console.WriteLine("Match count less than 2. magic: MOFALEF");
+                }
+
+                for (int i = 0; i < matches.Count;i++)
+                {
+                    if (matches[i].Index <= startIndex &&
+                        i + 1 < matches.Count &&
+                        matches[i+1].Index > startIndex)
+                    {
+                        int startPos = 0;
+                        int length = 0;
+
+                        if (matches[i].Index == 0)
+                        {
+                            startPos = 0;
+                        }
+                        else
+                        {
+                            // skip the previous separator
+                            startPos = matches[i].Index + 1;
+                        }
+
+                        if (matches[i + 1].Index == line.Length)
+                        {
+                            // end with $
+                            length = line.Length - startPos;
+                        }
+                        else
+                        {
+                            // can have the separator in this string
+                            length = matches[i + 1].Index + 1 - startPos;
+                        }
+                        string aCntxt = line.Substring(startPos, length);
+                        cntxt += aCntxt;
+                        cntxt += "<br>";
+                        Console.WriteLine("Found one context: " + aCntxt);
+                        foundCount++;
+                        continue;
+                    }
+                }
+                if (foundCount >= 2) break;
+            }
+            cntxt += "</html>";
+
+            webBrowserContext.DocumentText = cntxt;
+        }
+
+        private void checkBoxContext_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxContext.Checked)
+            {
+                // display some text
+
+                webBrowserContext.Visible = true;
+            }
+            else
+            {
+                webBrowserContext.Visible = false;
+            }
         }
     }
 }
