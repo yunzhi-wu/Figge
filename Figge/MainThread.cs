@@ -23,11 +23,25 @@ namespace Figge
         private Dictionary<char, int> m_histogram;
         private Dictionary<string, int> m_histogram_eng;
 
-        private bool m_isEnglishLike = true;
+        private bool m_isEnglishLikeText = true;
 
         public MainThread()
         {
             InitializeComponent();
+            OpenFileDialog ofd = new OpenFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                m_pathAllText = ofd.FileName;
+            }
+            // file name should indicate the language
+            if (m_pathAllText.ToUpperInvariant().Contains("_SE"))
+            {
+                m_isEnglishLikeText = true;
+            }
+            else if (m_pathAllText.ToUpperInvariant().Contains("_ZH"))
+            {
+                m_isEnglishLikeText = false;
+            }
 
             if (!File.Exists(m_pathAllText))
             {
@@ -73,6 +87,8 @@ namespace Figge
             /*************************************************
              * HTML file for New words
              *************************************************/
+            m_pathNewWord = string.Copy(m_pathAllText);
+            m_pathNewWord = m_pathNewWord.Replace(".html", "_Words.html");
             if (!File.Exists(m_pathNewWord))
             {
                 StreamWriter sw = File.CreateText(m_pathNewWord);
@@ -116,13 +132,16 @@ namespace Figge
                     }
                 }
             }
-
-
-
-            m_histogram = new Dictionary<char, int>();
-            m_histogram_eng = new Dictionary<string, int>();
+            if (m_isEnglishLikeText)
+            {
+                m_histogram_eng = new Dictionary<string, int>();
+            }
+            else
+            {
+                m_histogram = new Dictionary<char, int>();
+            }
+            
             updateHistogram();
-
         }
 
         private void MainThread_Load(object sender, EventArgs e)
@@ -138,7 +157,7 @@ namespace Figge
         private void AddNewThings_Click(object sender, EventArgs e)
         {
             // display_data dis_form = new display_data();
-            NewInput next_form = new NewInput(m_pathAllText, m_recordsAllText);
+            NewInput next_form = new NewInput(m_pathAllText, m_recordsAllText, m_isEnglishLikeText);
             next_form.callerForm = this;
             this.Hide();
             next_form.ShowDialog();
@@ -153,11 +172,16 @@ namespace Figge
 
         private void updateHistogram()
         {
-            bool isEnglishLikeText = true;
             bool aRecordStarted = false;
 
-            m_histogram.Clear();
-            m_histogram_eng.Clear();
+            if (m_isEnglishLikeText)
+            {
+                m_histogram_eng.Clear();
+            }
+            else
+            {
+                m_histogram.Clear();
+            }
 
             foreach (string line in m_recordsAllText)
             {
@@ -168,21 +192,7 @@ namespace Figge
                 }
                 if (aRecordStarted)
                 {
-                    if (!isEnglishLikeText)
-                    {
-                        foreach (char a in line)
-                        {
-                            if (m_histogram.ContainsKey(a))
-                            {
-                                m_histogram[a]++;
-                            }
-                            else
-                            {
-                                m_histogram.Add(a, 1);
-                            }
-                        }
-                    }
-                    else
+                    if (m_isEnglishLikeText)
                     {
                         string tmp = Regex.Replace(line, @"\.|,", " ");
                         string tmp2 = Regex.Replace(tmp, @"(\<np\>)|(\</np\>)|(\<nw\>)|(\</nw\>)|(\<td\>)|(\</td\>)", "");
@@ -199,24 +209,35 @@ namespace Figge
                                 m_histogram_eng.Add(word, 1);
                             }
                         }
-
                     }
-
+                    else
+                    {
+                        foreach (char a in line)
+                        {
+                            if (m_histogram.ContainsKey(a))
+                            {
+                                m_histogram[a]++;
+                            }
+                            else
+                            {
+                                m_histogram.Add(a, 1);
+                            }
+                        }
+                    }
                 }
                 if (line.Contains("</td>") && !Regex.IsMatch(line, @"\d\d/\d\d/\d\d\d\d"))
                 {
                     aRecordStarted = false;
                 }
             }
-            if (!isEnglishLikeText)
-            {
-                UserStatus.Text = "你已经学了 " + m_histogram.Count + " 个汉字\n";
-            }
-            else
+            if (m_isEnglishLikeText)
             {
                 UserStatus.Text = "You have recorded " + m_histogram_eng.Count + " words\n";
             }
-            
+            else
+            {
+                UserStatus.Text = "你已经学了 " + m_histogram.Count + " 个汉字\n";
+            }
         }
 
         private void Review_Click(object sender, EventArgs e)
@@ -251,7 +272,6 @@ namespace Figge
             // if a row's date time is later than the new words table's last update timestamp,
             // collect all the new words in the row
             bool isNewWordsAdded = false;
-            bool isEnglishLikeText = true;
             bool aRecordStarted = false;
             int rowNr = 1;
             DateTime dataTime = DateTime.MinValue;
@@ -294,10 +314,7 @@ namespace Figge
                 }
                 if (aRecordStarted)
                 {
-                    if (!isEnglishLikeText)
-                    {
-                    }
-                    else
+                    if (m_isEnglishLikeText)
                     {
                         string tmp = Regex.Replace(line, @"\.|,", " ");
                         string tmp2 = Regex.Replace(tmp, @"(\<td\>)|(\</td\>)", "");
@@ -314,6 +331,51 @@ namespace Figge
                                     newWord_l.Add(newWord);
                                     Console.WriteLine("Added a new word: \"" + newWord + "\" in newWord_l, count " + newWord_l.Count);
                                 }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int startPos = 0;
+                        Regex startReg = new Regex(@"(\<np\>)|(\<nw\>)");
+                        Regex endWordReg = new Regex(@"(\</nw\>)");
+                        Regex endPhraseReg = new Regex(@"(\</np\>)");
+                        while (startPos < line.Length)
+                        {
+                            match = startReg.Match(line, startPos);
+                            if (match.Success)
+                            {
+                                string startStr = line.Substring(match.Index, 4);
+
+                                Match match2;
+                                if (startStr.Contains("<nw>"))
+                                {
+                                    match2 = endWordReg.Match(line, match.Index);
+                                }
+                                else
+                                {
+                                    match2 = endPhraseReg.Match(line, match.Index);
+                                }
+
+                                if (match2.Success)
+                                {
+                                    string newWord = line.Substring(match.Index + 4, match2.Index - match.Index - 4);
+
+                                    if (!newWord_l.Contains(newWord))
+                                    {
+                                        newWord_l.Add(newWord);
+                                        Console.WriteLine("Added a new word: \"" + newWord + "\" in newWord_l, count " + newWord_l.Count);
+                                    }
+                                    startPos = match2.Index + 5;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                break;
                             }
                         }
                     }
@@ -402,7 +464,7 @@ namespace Figge
             // display_data dis_form = new display_data();
             MemoryCard next_form = new MemoryCard(m_pathNewWord,
                 m_recordsAllText,
-                m_isEnglishLike);
+                m_isEnglishLikeText);
             next_form.callerForm = this;
             this.Hide();
             next_form.ShowDialog();

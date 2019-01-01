@@ -31,13 +31,15 @@ namespace Figge
         private int allTextLen;
         private string allText;
         private DateTime createdTime;
-        private Boolean savedBefore;
+        private bool savedBefore;
+
+        private bool m_isEnglishLikeText;
 
         private string m_path;
 
         private string[] m_records;
 
-        public NewInput(string path, string[] records)
+        public NewInput(string path, string[] records, bool isEnglishLikeText)
         {
             InitializeComponent();
 
@@ -53,11 +55,12 @@ namespace Figge
             createdTime = DateTime.Now;
             Console.Write("createdTime: " + createdTime + '\n');
             savedBefore = false;
+            m_isEnglishLikeText = isEnglishLikeText;
         }
 
         // this is to read from existing record, so there is createdTime
         // this createdTime is used to find the right place to save it back
-        public NewInput(DateTime createdTime)
+        public NewInput(DateTime createdTime, bool isEnglishLikeText)
         {
             InitializeComponent();
             buttonNewWordBackColor = DefaultBackColor;
@@ -68,6 +71,7 @@ namespace Figge
             allTextLen = 0;
             this.createdTime = createdTime;
             savedBefore = true;
+            m_isEnglishLikeText = isEnglishLikeText;
         }
 
         private void buttonNewWords_Click(object sender, EventArgs e)
@@ -318,19 +322,15 @@ namespace Figge
 
                 string content;
 
-                bool isEnglishLikeText = true;
-
                 content = addHtmlPattern(richTextBoxInput.Text,
                     m_words_l,
                     "<nw>",
-                    "</nw>",
-                    isEnglishLikeText);
+                    "</nw>");
 
                 content = addHtmlPattern(content,
                     m_phrase_l,
                     "<np>",
-                    "</np>",
-                    isEnglishLikeText);
+                    "</np>");
 
                 string temp = content.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "<br>\r\n");
 
@@ -365,8 +365,7 @@ namespace Figge
         private string addHtmlPattern(string orig,
             List<string> list,
             string prefix,
-            string suffix,
-            bool isEnglishLikeText)
+            string suffix)
         {
             if (list.Count < 0)
             {
@@ -384,7 +383,7 @@ namespace Figge
                 string temp = string.Copy(result);
                 result = "";
 
-                if (!isEnglishLikeText)
+                if (!m_isEnglishLikeText)
                 {
                     // chinese
                     result = temp.Replace(item, newitem);
@@ -474,8 +473,7 @@ namespace Figge
 
                     // For English like text, word is usaully separated by space, comma, etc,
                     // so need match "whole" word
-                    bool isEnglishLikeText = true;
-                    if (isEnglishLikeText)
+                    if (m_isEnglishLikeText)
                     {
                         if (index != 0 && !isSeparator(richTextBoxInput.Text[index -1]))
                         {

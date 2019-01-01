@@ -34,3 +34,6 @@
 # debug related
 Figge/bin/Debug/*
 Figge/obj/Debug/*
+
+# project related
+.vs/*
