@@ -225,7 +225,7 @@ namespace Figge
             }
 
             newWordText.Text = m_newWordsSorted.Rows[m_newWordIndex].Field<string>("NewWords");
-            progressBarFamiliarity.Value = Convert.ToInt32(m_newWordsSorted.Rows[m_newWordIndex].Field<string>("Familiarity"));
+            progressBarFamiliarity.Value = 10 * Convert.ToInt32(m_newWordsSorted.Rows[m_newWordIndex].Field<string>("Familiarity"));
 
             checkBoxContext.Checked = false;
             webBrowserContext.Visible = false;
@@ -265,7 +265,7 @@ namespace Figge
                 MatchCollection matches;
                 if (m_isEnglishLike)
                 {
-                    matches = Regex.Matches(line, @"^|\.|$|：|:|?|!|('”')|('“')|(“)|(”)");
+                    matches = Regex.Matches(line, @"^|\.|$|：|:|\?|\!");
                 }
                 else
                 {
