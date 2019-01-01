@@ -55,6 +55,10 @@ namespace Figge
 
             getWeightTable();
 
+            if (!m_isEnglishLike)
+            {
+                newWordText.Font = new Font("楷体", 32f);
+            }
             m_newWordIndex = 0;
             displayNewWord();
         }
