@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.IO;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 
@@ -16,8 +17,11 @@ namespace Figge
 {
     public partial class MemoryCard : Form
     {
+        public const int MAX_NUMBER_OF_WORDS_TO_REMEMBER_PER_WEEK = 20;
+
         public MainThread callerForm;
         private string m_pathNewWords;
+        private string m_pathNewWordWeek;
         private string[] m_records;
         private bool m_isEnglishLike;
 
@@ -27,7 +31,6 @@ namespace Figge
         private DataTable m_newWordsSorted;
 
         private Int32 m_newWordIndex;
-        private Int32 m_newWordGroup = 1;
 
         public MemoryCard(string pathNewWord,
             string[] records,
@@ -53,7 +56,7 @@ namespace Figge
                                                      // select rows with td elements 
             }
 
-            getWeightTable();
+            getWeekTask();
 
             if (!m_isEnglishLike)
             {
@@ -63,65 +66,102 @@ namespace Figge
             displayNewWord();
         }
 
-        private void getWeightTable()
+        private void getWeekTask()
         {
             m_newWords.Clear();
             m_newWordsSorted.Clear();
 
-            foreach (var row in m_doc.DocumentNode.SelectNodes("//tr[td]"))
+            m_pathNewWordWeek = string.Copy(m_pathNewWords);
+            m_pathNewWordWeek = m_pathNewWordWeek.Replace(".html", "_Week.html");
+
+            if (!File.Exists(m_pathNewWordWeek))
             {
-                m_newWords.Rows.Add(row.SelectNodes("td").Select(td => td.InnerText).ToArray());
+                foreach (var row in m_doc.DocumentNode.SelectNodes("//tr[td]"))
+                {
+                    m_newWords.Rows.Add(row.SelectNodes("td").Select(td => td.InnerText).ToArray());
+                }
+
+                string expression;
+                // expression = "NewWords = 'is'";
+                // expression = "TimesAdded > 1";
+                // expression = "Date > #12/27/2018#"; // month first
+                expression = "Familiarity < 10";
+
+                var filteredDataRows = m_newWords.Select(expression);
+
+                if (filteredDataRows.Length == 0)
+                {
+                    // todo: create list in another way
+                    return;
+                }
+
+                DateTime today = DateTime.Now;
+
+                // a temporay table for weight
+                DataTable filteredDataTable = new DataTable();
+                filteredDataTable = filteredDataRows.CopyToDataTable();
+                filteredDataTable.Columns.Add("weight", typeof(Int16));
+
+                foreach (DataRow row in filteredDataTable.Rows)
+                {
+                    // weight for each column:
+                    // the older, the bigger: every three days a review should be done (wDay = days / 3)
+                    // the more times added, the bigger: wTimes = (TimesAdded - 1) * 2
+                    // the less familiar, the bigger: wF = (10 - famility)
+                    Int16 nrOfDays = (Int16)Math.Round((today - Convert.ToDateTime(row["Date"])).TotalDays, 0, MidpointRounding.AwayFromZero);
+                    row["weight"] = nrOfDays / 3 + 2 * (Convert.ToInt16(row["timesAdded"]) - 1) + (10 - Convert.ToInt16(row["Familiarity"]));
+
+                    Console.WriteLine("{0}\t\t: days {1}\t, timesAdded {2}, Familiarity {3}: weight {4}",
+                        row["NewWords"],
+                        nrOfDays,
+                        row["timesAdded"],
+                        row["Familiarity"],
+                        row["weight"]);
+                }
+
+                // sort by the weight
+
+                DataView dv = filteredDataTable.DefaultView;
+                dv.Sort = "weight desc";
+                m_newWordsSorted = dv.ToTable();
+
+                // export the first 20 rows to file
+                string export = ConvertDataTableToHTML(m_newWordsSorted, MAX_NUMBER_OF_WORDS_TO_REMEMBER_PER_WEEK);
+                using (StreamWriter sw = new StreamWriter(m_pathNewWordWeek, false, Encoding.GetEncoding("utf-8")))
+                {
+                    sw.Write(export);
+                }
             }
 
-            string expression;
-            // expression = "NewWords = 'is'";
-            // expression = "TimesAdded > 1";
-            // expression = "Date > #12/27/2018#"; // month first
-            expression = "Familiarity < 10";
+            HtmlAgilityPack.HtmlDocument doc_week;
+            doc_week = new HtmlAgilityPack.HtmlDocument();
+            doc_week.Load(m_pathNewWordWeek, Encoding.GetEncoding("utf-8"));
 
-            var filteredDataRows = m_newWords.Select(expression);
-
-            if (filteredDataRows.Length == 0)
+            var headers = doc_week.DocumentNode.SelectNodes("//tr/th");
+            DataTable newWordsWeek = new DataTable();
+            foreach (HtmlNode header in headers)
             {
-                // todo: create list in another way
-                return;
+                newWordsWeek.Columns.Add(header.InnerText); // create columns from th
+                                                          // select rows with td elements 
             }
-
-            DateTime today = DateTime.Now;
-
-            // a temporay table for weight
-            DataTable filteredDataTable = new DataTable();
-            filteredDataTable = filteredDataRows.CopyToDataTable();
-            filteredDataTable.Columns.Add("weight", typeof(Int16));
-
-            foreach (DataRow row in filteredDataTable.Rows)
+            foreach (var row in doc_week.DocumentNode.SelectNodes("//tr[td]"))
             {
-                // weight for each column:
-                // the older, the bigger: every three days a review should be done (wDay = days / 3)
-                // the more times added, the bigger: wTimes = (TimesAdded - 1) * 2
-                // the less familiar, the bigger: wF = (10 - famility)
-                Int16 nrOfDays = (Int16)Math.Round((today - Convert.ToDateTime(row["Date"])).TotalDays, 0, MidpointRounding.AwayFromZero);
-                row["weight"] = nrOfDays / 3 + 2 * (Convert.ToInt16(row["timesAdded"]) - 1) + (10 - Convert.ToInt16(row["Familiarity"]));
-
-                Console.WriteLine("{0}\t\t: days {1}\t, timesAdded {2}, Familiarity {3}: weight {4}",
-                    row["NewWords"],
-                    nrOfDays,
-                    row["timesAdded"],
-                    row["Familiarity"],
-                    row["weight"]);
+                newWordsWeek.Rows.Add(row.SelectNodes("td").Select(td => td.InnerText).ToArray());
             }
-
-            // sort by the weight
-
-            DataView dv = filteredDataTable.DefaultView;
-            dv.Sort = "weight desc";
-            m_newWordsSorted = dv.ToTable();
+            m_newWordsSorted = newWordsWeek;
+            m_newWordIndex = 0;
         }
 
         private void MemoryCard_FormClosed(object sender, FormClosedEventArgs e)
         {
             // save the updated xml back to file
             m_doc.Save(m_pathNewWords, Encoding.GetEncoding("utf-8"));
+            // export the first 20 rows to file
+            string export = ConvertDataTableToHTML(m_newWordsSorted, MAX_NUMBER_OF_WORDS_TO_REMEMBER_PER_WEEK);
+            using (StreamWriter sw = new StreamWriter(m_pathNewWordWeek, false, Encoding.GetEncoding("utf-8")))
+            {
+                sw.Write(export);
+            }
             callerForm.Show();
         }
 
@@ -167,6 +207,29 @@ namespace Figge
             }
 
             tmp[0].InnerHtml = ReplaceLastOccurrence(tmp[0].InnerHtml, match.Value, newFamiliarity.ToString());
+
+            // todo, use the same way to update the new words table and new words for week table
+            m_newWordsSorted.Rows[m_newWordIndex]["familiarity"] = newFamiliarity.ToString();
+
+            // if the familiarity reaches 10, remember the OK date
+            if (newFamiliarity >= 10 &&
+                string.IsNullOrEmpty(m_newWordsSorted.Rows[m_newWordIndex]["OKDate"].ToString()))
+            {
+                m_newWordsSorted.Rows[m_newWordIndex]["OKDate"] = DateTime.Now.ToShortDateString();
+
+                // update tmp[0], format is like:
+                // "\r\n    <td>26/11/2018</td>\r\n    <td></td>\r\n    <td>算</td>\r\n    <td>1</td>\r\n    <td>2</td>\r\n  "
+                MatchCollection match_td = Regex.Matches(tmp[0].InnerHtml, @"\</td\>");
+                if (match_td.Count != 5)
+                {
+                    Console.WriteLine("updateFamiliarity() got different format");
+                    return;
+                }
+                string innerHtml = tmp[0].InnerHtml.Substring(0, match_td[1].Index);
+                innerHtml += DateTime.Now.ToShortDateString();
+                innerHtml += tmp[0].InnerHtml.Substring(match_td[1].Index);
+                tmp[0].InnerHtml = string.Copy(innerHtml);
+            }
         }
 
         private string ReplaceLastOccurrence(string Source, string Find, string Replace)
@@ -183,19 +246,11 @@ namespace Figge
         private void displayNewWord()
         {
             bool isFinished = false;
-            int finishReason = 0;
             string finishReasonStr = "你已经完成";
             if (m_newWordIndex >= m_newWordsSorted.Rows.Count)
             {
                 isFinished = true;
-                finishReason = 1;
                 finishReasonStr += "全部新字。\n";
-            }
-            else if (m_newWordIndex >= 12 * m_newWordGroup)
-            {
-                isFinished = true;
-                finishReason = 2;
-                finishReasonStr += "一组十二个新字。\n";
             }
             if (isFinished)
             {
@@ -206,27 +261,22 @@ namespace Figge
                                                      MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    if (finishReason == 1)
-                    {
-                        getWeightTable();
-                        m_newWordIndex = 0;
-                        m_newWordGroup = 1;
-                    }
-                    else if (finishReason == 2)
-                    {
-                        m_newWordGroup++;
-                    }
-                    finishReason = 0;
+                    m_newWordIndex = 0;
                 }
                 else
                 {
                     this.Close();
+                    return;
                 }
             }
 
             newWordText.Text = m_newWordsSorted.Rows[m_newWordIndex].Field<string>("NewWords");
-            progressBarFamiliarity.Value = 10 * Convert.ToInt32(m_newWordsSorted.Rows[m_newWordIndex].Field<string>("Familiarity"));
+            progressBarFamiliarity.Value = Math.Min(100, 10 * Convert.ToInt32(m_newWordsSorted.Rows[m_newWordIndex].Field<string>("Familiarity")));
 
+
+            /*
+             *  prepare the context string 
+             */
             checkBoxContext.Checked = false;
             webBrowserContext.Visible = false;
 
@@ -332,6 +382,27 @@ namespace Figge
             {
                 webBrowserContext.Visible = false;
             }
+        }
+
+        private string ConvertDataTableToHTML(DataTable dt,
+            int maxNrOfRows)
+        {
+            string html = "<table>\n";
+            //add header row
+            html += "<tr>\n";
+            for (int i = 0; i < dt.Columns.Count && i < maxNrOfRows; i++)
+                html += "  <th>" + dt.Columns[i].ColumnName + "</th>\n";
+            html += "</tr>\n";
+            //add rows
+            for (int i = 0; i < dt.Rows.Count && i < maxNrOfRows; i++)
+            {
+                html += "<tr>\n";
+                for (int j = 0; j < dt.Columns.Count; j++)
+                    html += "  <td>" + dt.Rows[i][j].ToString() + "</td>\n";
+                html += "</tr>\n";
+            }
+            html += "</table>";
+            return html;
         }
     }
 }

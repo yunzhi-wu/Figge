@@ -98,7 +98,7 @@ namespace Figge
 
             if (m_newWords.Length == 0)
             {
-                m_newWords = new string[24];
+                m_newWords = new string[25];
                 int i = 0;
                 m_newWords[i++] = "<!DOCTYPE html>";
                 m_newWords[i++] = "<html>";
@@ -118,6 +118,7 @@ namespace Figge
                 m_newWords[i++] = "<table style=\"width:100%\" border=1 frame=void rules=rows>";
                 m_newWords[i++] = "  <tr>";
                 m_newWords[i++] = "    <th>Date</th>";
+                m_newWords[i++] = "    <th>OKDate</th>";
                 m_newWords[i++] = "    <th>NewWords</th>";
                 m_newWords[i++] = "    <th>TimesAdded</th>";
                 m_newWords[i++] = "    <th>Familiarity</th>";
@@ -418,15 +419,16 @@ namespace Figge
                         }
                         if (lineIndex == m_newWords.Length)
                         {
-                            int newLength = m_newWords.Length + 6;
+                            int newLength = m_newWords.Length + 7;
                             string[] tmp = new string[newLength];
                             m_newWords.CopyTo(tmp, 0);
 
-                            tmp[newLength - 2] = tmp[newLength - 8];
-                            tmp[newLength - 1] = tmp[newLength - 7];
+                            tmp[newLength - 2] = tmp[newLength - 9];
+                            tmp[newLength - 1] = tmp[newLength - 8];
 
-                            tmp[newLength - 8] = "  <tr>";
-                            tmp[newLength - 7] = "    <td>" + dataTime.Date.ToShortDateString() + "</td>";
+                            tmp[newLength - 9] = "  <tr>";
+                            tmp[newLength - 8] = "    <td>" + dataTime.Date.ToShortDateString() + "</td>";
+                            tmp[newLength - 7] = "    <td></td>";
                             tmp[newLength - 6] = "    <td>" + newWord + "</td>";
                             tmp[newLength - 5] = "    <td>1</td>";
                             tmp[newLength - 4] = "    <td>1</td>";
