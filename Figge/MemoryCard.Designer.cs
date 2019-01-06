@@ -35,6 +35,7 @@
             this.progressBarFamiliarity = new System.Windows.Forms.ProgressBar();
             this.webBrowserContext = new System.Windows.Forms.WebBrowser();
             this.checkBoxContext = new System.Windows.Forms.CheckBox();
+            this.buttonGetNewSet = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // newWordText
@@ -126,11 +127,23 @@
             this.checkBoxContext.UseVisualStyleBackColor = true;
             this.checkBoxContext.CheckedChanged += new System.EventHandler(this.checkBoxContext_CheckedChanged);
             // 
+            // buttonGetNewSet
+            // 
+            this.buttonGetNewSet.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonGetNewSet.Location = new System.Drawing.Point(21, 387);
+            this.buttonGetNewSet.Name = "buttonGetNewSet";
+            this.buttonGetNewSet.Size = new System.Drawing.Size(130, 40);
+            this.buttonGetNewSet.TabIndex = 5;
+            this.buttonGetNewSet.Text = "换一组";
+            this.buttonGetNewSet.UseVisualStyleBackColor = true;
+            this.buttonGetNewSet.Click += new System.EventHandler(this.buttonGetNewSet_Click);
+            // 
             // MemoryCard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonGetNewSet);
             this.Controls.Add(this.checkBoxContext);
             this.Controls.Add(this.webBrowserContext);
             this.Controls.Add(this.progressBarFamiliarity);
@@ -157,5 +170,6 @@
         private System.Windows.Forms.ProgressBar progressBarFamiliarity;
         private System.Windows.Forms.WebBrowser webBrowserContext;
         private System.Windows.Forms.CheckBox checkBoxContext;
+        private System.Windows.Forms.Button buttonGetNewSet;
     }
 }

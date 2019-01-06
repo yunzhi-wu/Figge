@@ -39,6 +39,8 @@ namespace Figge
             InitializeComponent();
 
             m_pathNewWords = string.Copy(pathNewWord);
+            m_pathNewWordWeek = m_pathNewWords.Insert(m_pathNewWords.Length - 5, "_Week");
+            
             m_records = records;
             m_isEnglishLike = isEnglishLike;
 
@@ -56,7 +58,7 @@ namespace Figge
                                                      // select rows with td elements 
             }
 
-            getWeekTask();
+            getWeekTask(false);
 
             if (!m_isEnglishLike)
             {
@@ -66,15 +68,13 @@ namespace Figge
             displayNewWord();
         }
 
-        private void getWeekTask()
+        private void getWeekTask(bool isRegenerate)
         {
             m_newWords.Clear();
             m_newWordsSorted.Clear();
 
-            m_pathNewWordWeek = string.Copy(m_pathNewWords);
-            m_pathNewWordWeek = m_pathNewWordWeek.Replace(".html", "_Week.html");
-
-            if (!File.Exists(m_pathNewWordWeek))
+            if ((!isRegenerate && !File.Exists(m_pathNewWordWeek)) // called from MemoryCard()
+                || isRegenerate)                                   // called from buttonGetNewSet_Click()
             {
                 foreach (var row in m_doc.DocumentNode.SelectNodes("//tr[td]"))
                 {
@@ -400,6 +400,19 @@ namespace Figge
             }
             html += "</table>";
             return html;
+        }
+
+        private void buttonGetNewSet_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(null,
+                                                 "确定要换一组吗？\n一般是每周学习一组20个字，学好后才换。",
+                                                 "Warning",
+                                                 MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                getWeekTask(true);
+                displayNewWord();
+            }
         }
     }
 }
