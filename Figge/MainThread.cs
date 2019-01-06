@@ -325,7 +325,7 @@ namespace Figge
                         {
                             if (Regex.IsMatch(word, @"(<np>)|(</np>)|(<nw>)|(</nw>)"))
                             {
-                                string newWord = Regex.Replace(word, @"(<np>)|(</np>)|(<nw>)|(</nw>)", "");
+                                string newWord = Regex.Replace(word, @"(<np>)|(</np>)|(<nw>)|(</nw>)|(<br>)", "");
                                 Console.WriteLine("Found a new word: \"" + newWord + "\" in row " + rowNr);
                                 if (!newWord_l.Contains(newWord))
                                 {
