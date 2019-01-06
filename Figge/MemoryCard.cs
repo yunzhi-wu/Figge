@@ -225,10 +225,7 @@ namespace Figge
                     Console.WriteLine("updateFamiliarity() got different format");
                     return;
                 }
-                string innerHtml = tmp[0].InnerHtml.Substring(0, match_td[1].Index);
-                innerHtml += DateTime.Now.ToShortDateString();
-                innerHtml += tmp[0].InnerHtml.Substring(match_td[1].Index);
-                tmp[0].InnerHtml = string.Copy(innerHtml);
+                tmp[0].InnerHtml = tmp[0].InnerHtml.Insert(match_td[1].Index, DateTime.Now.ToShortDateString());
             }
         }
 
