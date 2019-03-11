@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using System.IO;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
@@ -109,7 +104,7 @@ namespace Figge
                     // the more times added, the bigger: wTimes = (TimesAdded - 1) * 2
                     // the less familiar, the bigger: wF = (10 - famility)
                     Int16 nrOfDays = (Int16)Math.Round((today - Convert.ToDateTime(row["Date"])).TotalDays, 0, MidpointRounding.AwayFromZero);
-                    row["weight"] = nrOfDays / 3 + 2 * (Convert.ToInt16(row["timesAdded"]) - 1) + (10 - Convert.ToInt16(row["Familiarity"]));
+                    row["weight"] = nrOfDays / 4 + 2 * (Convert.ToInt16(row["timesAdded"]) - 1) + (10 - Convert.ToInt16(row["Familiarity"]));
 
                     Console.WriteLine("{0}\t\t: days {1}\t, timesAdded {2}, Familiarity {3}: weight {4}",
                         row["NewWords"],
@@ -170,6 +165,9 @@ namespace Figge
             updateFamiliarity(newWordText.Text, 1);
             m_newWordIndex++;
             displayNewWord();
+            this.buttonYes.Enabled = false;
+            System.Threading.Thread.Sleep(500);
+            this.buttonYes.Enabled = true;
         }
 
         private void buttonVeryWell_Click(object sender, EventArgs e)
@@ -177,6 +175,9 @@ namespace Figge
             updateFamiliarity(newWordText.Text, 3);
             m_newWordIndex++;
             displayNewWord();
+            this.buttonVeryWell.Enabled = false;
+            System.Threading.Thread.Sleep(500);
+            this.buttonVeryWell.Enabled = true;
         }
 
         private void buttonNo_Click(object sender, EventArgs e)
@@ -184,6 +185,9 @@ namespace Figge
             updateFamiliarity(newWordText.Text, -1);
             m_newWordIndex++;
             displayNewWord();
+            this.buttonNo.Enabled = false;
+            System.Threading.Thread.Sleep(500);
+            this.buttonNo.Enabled = true;
         }
 
         private void updateFamiliarity(string newWord, int delta)
@@ -259,6 +263,7 @@ namespace Figge
                 if (result == DialogResult.Yes)
                 {
                     m_newWordIndex = 0;
+                    // shuffle these words
                 }
                 else
                 {
