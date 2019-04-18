@@ -471,5 +471,15 @@ namespace Figge
             this.Hide();
             next_form.ShowDialog();
         }
+
+        private void Statistics_Click(object sender, EventArgs e)
+        {
+            Statistics next_form = new Statistics(m_pathNewWord,
+                m_recordsAllText,
+                m_isEnglishLikeText);
+            next_form.callerForm = this;
+            this.Hide();
+            next_form.ShowDialog();
+        }
     }
 }

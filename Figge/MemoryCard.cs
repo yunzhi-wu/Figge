@@ -163,30 +163,30 @@ namespace Figge
         private void buttonYes_Click(object sender, EventArgs e)
         {
             updateFamiliarity(newWordText.Text, 1);
-            m_newWordIndex++;
-            displayNewWord();
             this.buttonYes.Enabled = false;
             System.Threading.Thread.Sleep(500);
+            m_newWordIndex++;
+            displayNewWord();
             this.buttonYes.Enabled = true;
         }
 
         private void buttonVeryWell_Click(object sender, EventArgs e)
         {
             updateFamiliarity(newWordText.Text, 3);
-            m_newWordIndex++;
-            displayNewWord();
             this.buttonVeryWell.Enabled = false;
             System.Threading.Thread.Sleep(500);
+            m_newWordIndex++;
+            displayNewWord();
             this.buttonVeryWell.Enabled = true;
         }
 
         private void buttonNo_Click(object sender, EventArgs e)
         {
             updateFamiliarity(newWordText.Text, -1);
-            m_newWordIndex++;
-            displayNewWord();
             this.buttonNo.Enabled = false;
             System.Threading.Thread.Sleep(500);
+            m_newWordIndex++;
+            displayNewWord();
             this.buttonNo.Enabled = true;
         }
 
