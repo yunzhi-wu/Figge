@@ -49,8 +49,21 @@ namespace Figge
 
             foreach (HtmlNode header in headers)
             {
-                m_newWords.Columns.Add(header.InnerText); // create columns from th
-                                                     // select rows with td elements 
+                /*
+                if (header.InnerText.Contains("Date"))
+                {
+                    m_newWords.Columns.Add(new DataColumn(header.InnerText, typeof(DateTime)));
+                }
+                else */
+                if (header.InnerText.Contains("Familiarity") ||
+                    header.InnerText.Contains("TimesAdded"))
+                {
+                    m_newWords.Columns.Add(new DataColumn(header.InnerText, typeof(int)));
+                }
+                else
+                {
+                    m_newWords.Columns.Add(new DataColumn(header.InnerText, typeof(string)));
+                }
             }
 
             getWeekTask(false);
@@ -65,15 +78,21 @@ namespace Figge
 
         private void getWeekTask(bool isRegenerate)
         {
-            m_newWords.Clear();
-            m_newWordsSorted.Clear();
+            m_newWords.Rows.Clear();
+            m_newWordsSorted.Rows.Clear();
 
             if ((!isRegenerate && !File.Exists(m_pathNewWordWeek)) // called from MemoryCard()
                 || isRegenerate)                                   // called from buttonGetNewSet_Click()
             {
                 foreach (var row in m_doc.DocumentNode.SelectNodes("//tr[td]"))
                 {
-                    m_newWords.Rows.Add(row.SelectNodes("td").Select(td => td.InnerText).ToArray());
+                    var sn = row.SelectNodes("td");
+                    m_newWords.Rows.Add(
+                        sn[0].InnerText,
+                        sn[1].InnerText,
+                        sn[2].InnerText,
+                        Convert.ToInt32(sn[3].InnerText),
+                        Convert.ToInt32(sn[4].InnerText));
                 }
 
                 string expression;
@@ -104,13 +123,13 @@ namespace Figge
                     // the more times added, the bigger: wTimes = (TimesAdded - 1) * 2
                     // the less familiar, the bigger: wF = (10 - famility)
                     Int16 nrOfDays = (Int16)Math.Round((today - Convert.ToDateTime(row["Date"])).TotalDays, 0, MidpointRounding.AwayFromZero);
-                    row["weight"] = nrOfDays / 4 + 2 * (Convert.ToInt16(row["timesAdded"]) - 1) + (10 - Convert.ToInt16(row["Familiarity"]));
+                    row["weight"] = nrOfDays / 4 + 2 * (row.Field<int>("timesAdded") - 1) + (10 - row.Field<int>("Familiarity"));
 
                     Console.WriteLine("{0}\t\t: days {1}\t, timesAdded {2}, Familiarity {3}: weight {4}",
                         row["NewWords"],
                         nrOfDays,
-                        row["timesAdded"],
-                        row["Familiarity"],
+                        row.Field<int>("timesAdded"),
+                        row.Field<int>("Familiarity"),
                         row["weight"]);
                 }
 
