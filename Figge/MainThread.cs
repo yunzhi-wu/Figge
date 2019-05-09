@@ -195,8 +195,8 @@ namespace Figge
                 {
                     if (m_isEnglishLikeText)
                     {
-                        string tmp = Regex.Replace(line, @"\.|,", " ");
-                        string tmp2 = Regex.Replace(tmp, @"(\<np\>)|(\</np\>)|(\<nw\>)|(\</nw\>)|(\<td\>)|(\</td\>)", "");
+                        string tmp = Regex.Replace(line, @"\.|,|\(|\)|:|\!|\?", " ");
+                        string tmp2 = Regex.Replace(tmp, @"(\<np\>)|(\</np\>)|(\<nw\>)|(\</nw\>)|(\<td\>)|(\</td\>)|(\<br\>)", "");
                         string tmp3 = tmp2.ToLower();
                         string[] words = tmp3.Split();
                         foreach (string word in words)
@@ -233,6 +233,10 @@ namespace Figge
             }
             if (m_isEnglishLikeText)
             {
+                // eliminate duplicated words
+                // List<string> listOfWords = m_histogram_eng.Keys.ToList();
+                // listOfWords.Sort();
+
                 UserStatus.Text = "You have recorded " + m_histogram_eng.Count + " words\n";
             }
             else
