@@ -263,32 +263,54 @@ namespace Figge
             return result;
         }
 
-        private void displayNewWord()
+        private int GetNextNewWord()
         {
-            bool isFinished = false;
             string finishReasonStr = "你已经完成";
-            if (m_newWordIndex >= m_newWordsSorted.Rows.Count)
+
+            while (true)
             {
-                isFinished = true;
-                finishReasonStr += "全部新字。\n";
-            }
-            if (isFinished)
-            {
-                finishReasonStr += "还要再练习吗？";
-                DialogResult result = MessageBox.Show(null,
-                                                     finishReasonStr,
-                                                     "Info",
-                                                     MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
+                bool isFinished = false;
+                if (m_newWordIndex >= m_newWordsSorted.Rows.Count)
                 {
-                    m_newWordIndex = 0;
-                    // shuffle these words
+                    isFinished = true;
+                    finishReasonStr += "全部新字。\n";
+                }
+                if (isFinished)
+                {
+                    finishReasonStr += "还要再练习吗？";
+                    DialogResult result = MessageBox.Show(null,
+                                                         finishReasonStr,
+                                                         "Info",
+                                                         MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        m_newWordIndex = 0;
+                        // shuffle these words
+                    }
+                    else
+                    {
+                        this.Close();
+                        return -1;
+                    }
+                }
+                int fami = Convert.ToInt32(m_newWordsSorted.Rows[m_newWordIndex].Field<string>("Familiarity"));
+                if (fami <= 10)
+                {
+                    return m_newWordIndex;
                 }
                 else
                 {
-                    this.Close();
-                    return;
+                    m_newWordIndex++;
                 }
+            }
+        }
+
+        private void displayNewWord()
+        {
+            int foundIndex = GetNextNewWord();
+            if (foundIndex == -1)
+            {
+                return;
             }
 
             newWordText.Text = m_newWordsSorted.Rows[m_newWordIndex].Field<string>("NewWords");
