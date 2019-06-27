@@ -485,5 +485,21 @@ namespace Figge
             this.Hide();
             next_form.ShowDialog();
         }
+
+        private void ButtonPrintAll_Click(object sender, EventArgs e)
+        {
+            // copy the template file into output folder, rename it as "all_date_time.html"
+            // get all words and put them in the table
+            // save it
+            // TODO: call system printer diagram
+        }
+
+        private void buttonPrintNewWordsCard_Click(object sender, EventArgs e)
+        {
+            // copy the template file into output folder, rename it as "week_words_date_time.html"
+            // put this weeks new words in this doc with format
+            // save it
+            // TODO: call system printer diagram
+        }
     }
 }
