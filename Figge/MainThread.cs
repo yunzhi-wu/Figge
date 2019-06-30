@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 
 namespace Figge
 {
@@ -488,9 +489,122 @@ namespace Figge
 
         private void ButtonPrintAll_Click(object sender, EventArgs e)
         {
-            // copy the template file into output folder, rename it as "all_date_time.html"
-            // get all words and put them in the table
+            // prepare file
+            string surcePath = "C:\\Users\\User\\Documents\\GitHub\\Figge\\Figge\\print_template_all.html";
+            string destPath = "C:\\Users\\User\\Documents\\GitHub\\Figge\\Figge\\output\\print_all_words_";
+            DateTime today = DateTime.Now;
+            destPath += today.Year.ToString();
+            destPath += today.Month.ToString();
+            destPath += today.Day.ToString();
+            destPath += "-";
+            destPath += today.Hour.ToString();
+            destPath += today.Minute.ToString();
+            destPath += ".html";
+            //File.Copy(surcePath, destPath);
+
+            List<string> printContent = new List<string>();
+
+            string[] originDoc = File.ReadAllLines(surcePath, Encoding.GetEncoding("utf-8"));
+            string[] originDocFront = new string[30];
+            Array.Copy(originDoc, originDocFront, 30);
+
+            printContent = originDocFront.ToList<string>();
+            
+            // get all new words
+            DataTable newWords = new DataTable();
+
+            HtmlAgilityPack.HtmlDocument m_doc = new HtmlAgilityPack.HtmlDocument();
+            m_doc.Load(m_pathNewWord, Encoding.GetEncoding("utf-8"));
+
+            var headers = m_doc.DocumentNode.SelectNodes("//tr/th");
+            foreach (HtmlNode header in headers)
+            {
+                if (!header.InnerText.Contains("Familiarity") &&
+                    !header.InnerText.Contains("TimesAdded"))
+                // {
+                //     newWords.Columns.Add(new DataColumn(header.InnerText, typeof(int)));
+                // }
+                // else
+                {
+                    newWords.Columns.Add(new DataColumn(header.InnerText, typeof(string)));
+                }
+            }
+
+            foreach (var row in m_doc.DocumentNode.SelectNodes("//tr[td]"))
+            {
+                var sn = row.SelectNodes("td");
+                newWords.Rows.Add(
+                    sn[0].InnerText,
+                    sn[1].InnerText,
+                    sn[2].InnerText);
+            }
+
+            Int16 wordsCnt = 0;
+            Int16 rowCnt = 0;
+            printContent.Add("      <tr>");
+            foreach (DataRow row in newWords.Rows)
+            {
+                printContent.Add("        <td>" + row["NewWords"].ToString() + "</td>");
+
+                wordsCnt++;
+                if ((m_isEnglishLikeText && wordsCnt == 4) ||
+                    (!m_isEnglishLikeText && wordsCnt == 5))
+                {
+                    // end of a row
+                    printContent.Add("      </tr>");
+                    rowCnt++;
+
+                    if (rowCnt >= 35)
+                    {
+                        // end the table
+                        printContent.Add("    </table>");
+                        // end the page
+                        printContent.Add("  </div>");
+
+                        rowCnt = 0;
+                        // start a new page
+                        printContent.Add("  <div class=\"page\">");
+                        // start a new table
+                        printContent.Add("    <table style=\"width: 100% \" border=\"1\" frame=\"void\" rules=\"rows\">");
+                        printContent.Add("      <tr style='display:none;'>");
+                        printContent.Add("        <th>column1</th>");
+                        printContent.Add("        <th>column2</th>");
+                        printContent.Add("        <th>column3</th>");
+                        printContent.Add("        <th>column4</th>");
+                        printContent.Add("        <th>column5</th>");
+                        printContent.Add("      </tr>");
+                    }
+
+                    // start a new row
+                    wordsCnt = 0;
+                    printContent.Add("      <tr>");
+                }
+            }
+            if (wordsCnt == 0)
+            {
+                // remove one line
+                printContent.Remove(printContent.Last<string>());
+            }
+            else
+            {
+                printContent.Add("      </tr>");
+            }
+            // end the table
+            printContent.Add("    </table>");
+            // end the page
+            printContent.Add("  </div>");
+            // end book
+            printContent.Add("</div>");
+            
+            printContent.Add("</body>");
+            printContent.Add("</html>");
+
             // save it
+            using (StreamWriter sw = new StreamWriter(destPath, false, Encoding.GetEncoding("utf-8")))
+            {
+                foreach (String s in printContent)
+                    sw.WriteLine(s);
+            }
             // TODO: call system printer diagram
         }
 
