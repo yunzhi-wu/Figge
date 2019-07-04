@@ -145,6 +145,8 @@ namespace Figge
                 {
                     sw.Write(export);
                 }
+
+                GeneratePrintableWeek();
             }
 
             HtmlAgilityPack.HtmlDocument doc_week;
@@ -338,18 +340,30 @@ namespace Figge
                           "</style>" +
                           "</head>";  // remember to add  "</html>";
 
-            string wordWithNw = "<nw>" + newWordText.Text + "</nw>";
-            string wordWithNp = "<np>" + newWordText.Text + "</np>";
+            cntxt += FindContext(newWordText.Text);
+            cntxt += "</html>";
+
+            webBrowserContext.DocumentText = cntxt;
+        }
+
+        private string FindContext(string word)
+        {
+            string cntxt = "";
+            string wordWithNw = "<nw>" + word + "</nw>";
+            string wordWithNp = "<np>" + word + "</np>";
 
             int foundCount = 0;
             foreach (string line in m_records)
             {
                 int startIndex;
+                string lineTmp;
 
-                startIndex = line.IndexOf(wordWithNw);
+                lineTmp = Regex.Replace(line, @"^ *\<td\>", "");
+                lineTmp = Regex.Replace(lineTmp, @"\</td\>", "");
+                startIndex = lineTmp.IndexOf(wordWithNw);
                 if (startIndex < 0)
                 {
-                    startIndex = line.IndexOf(wordWithNp);
+                    startIndex = lineTmp.IndexOf(wordWithNp);
                 }
                 if (startIndex < 0)
                 {
@@ -358,22 +372,22 @@ namespace Figge
                 MatchCollection matches;
                 if (m_isEnglishLike)
                 {
-                    matches = Regex.Matches(line, @"^|\.|$|：|:|\?|\!");
+                    matches = Regex.Matches(lineTmp, @"^|\.|$|：|:|\?|\!");
                 }
                 else
                 {
-                    matches = Regex.Matches(line, @"^|\.|。|$|：|:|？|！|('”')|('“')|(“)|(”)");
+                    matches = Regex.Matches(lineTmp, @"^|\.|。|$|：|:|？|！|('”')|('“')|(“)|(”)");
                 }
                 if (matches.Count < 2)
                 {
                     Console.WriteLine("Match count less than 2. magic: MOFALEF");
                 }
 
-                for (int i = 0; i < matches.Count;i++)
+                for (int i = 0; i < matches.Count; i++)
                 {
                     if (matches[i].Index <= startIndex &&
                         i + 1 < matches.Count &&
-                        matches[i+1].Index > startIndex)
+                        matches[i + 1].Index > startIndex)
                     {
                         int startPos = 0;
                         int length = 0;
@@ -388,17 +402,17 @@ namespace Figge
                             startPos = matches[i].Index + 1;
                         }
 
-                        if (matches[i + 1].Index == line.Length)
+                        if (matches[i + 1].Index == lineTmp.Length)
                         {
                             // end with $
-                            length = line.Length - startPos;
+                            length = lineTmp.Length - startPos;
                         }
                         else
                         {
                             // can have the separator in this string
                             length = matches[i + 1].Index + 1 - startPos;
                         }
-                        string aCntxt = line.Substring(startPos, length);
+                        string aCntxt = lineTmp.Substring(startPos, length);
                         cntxt += aCntxt;
                         cntxt += "<br>";
                         Console.WriteLine("Found one context: " + aCntxt);
@@ -408,9 +422,7 @@ namespace Figge
                 }
                 if (foundCount >= 2) break;
             }
-            cntxt += "</html>";
-
-            webBrowserContext.DocumentText = cntxt;
+            return cntxt;
         }
 
         private void checkBoxContext_CheckedChanged(object sender, EventArgs e)
@@ -458,6 +470,66 @@ namespace Figge
             {
                 getWeekTask(true);
                 displayNewWord();
+            }
+        }
+
+        private void GeneratePrintableWeek()
+        {
+            // generate the printable html file
+
+            string printable = "<!DOCTYPE html>\r\n" +
+                            "<html>\r\n" +
+                            "<head>\r\n" +
+                            "  <meta http-equiv='x-ua-compatible' content='IE=edge,chrome=1'>\r\n" +
+                            "  <meta charset=\"utf-8\">\r\n" +
+                            "<style>\r\n" +
+                            "nw {\r\n" +
+                            "    background-color: White;\r\n" +
+                            "}\r\n" +
+                            "np {\r\n" +
+                            "    background-color: Whrite;\r\n" +
+                            "}\r\n" +
+                            "</style>\r\n" +
+                            "</head>\r\n" +
+                            "<head>\r\n" +
+                            "  <link rel=\"stylesheet\" href=\"print-a4.css\">\r\n" +
+                            "</head>\r\n" +
+                            "\r\n" +
+                            "<body>\r\n" +
+                            "\r\n" +
+                            "<div class=\"book\">\r\n" +
+                            "  <div class=\"page\">\r\n" +
+                            "    <table style=\"width:100%\" border=\"1\" frame=\"void\" rules=\"rows\" table-layout=\"fixed\">\r\n" +
+                            "      <tr style='display:none;'>\r\n" +
+                            "        <th>NewWords</th>\r\n" +
+                            "        <th>PinYin</th>\r\n" +
+                            "        <th>Context</th>\r\n" +
+                            "      </tr>\r\n";  // remember to add  " </table>";
+
+            HtmlAgilityPack.HtmlDocument docPrint;
+            docPrint = new HtmlAgilityPack.HtmlDocument();
+            docPrint.Load(m_pathNewWordWeek, Encoding.GetEncoding("utf-8"));
+
+            string[] arr = new string[] { };
+
+            foreach (var row in docPrint.DocumentNode.SelectNodes("//tr[td]"))
+            {
+                arr = row.SelectNodes("td").Select(td => td.InnerText).ToArray();
+                printable = printable + "      <tr>\r\n";
+                // printable = printable + "        <td style='min-width:200px'><font size=\"8\">" + arr[2] + "</td>\r\n";
+                printable = printable + "        <td style='min-width:200px'>" + arr[2] + "</td>\r\n";
+                printable = printable + "        <td>        </td>\r\n";
+                printable = printable + "        <td>" + FindContext(arr[2]) + "</td>\r\n";
+                printable = printable + "      </tr>\r\n";
+            }
+            printable = printable + "    </table>\r\n";
+            printable = printable + "  </div class=\"page\">\r\n";
+            printable = printable + "</div class=\"book\">\r\n";
+            printable = printable + "</html>\r\n";
+            string m_pathNewWordWeekPrint = m_pathNewWordWeek.Insert(m_pathNewWordWeek.Length - 5, "_Print");
+            using (StreamWriter sw = new StreamWriter(m_pathNewWordWeekPrint, false, Encoding.GetEncoding("utf-8")))
+            {
+                sw.Write(printable);
             }
         }
     }
